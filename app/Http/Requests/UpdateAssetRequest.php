@@ -32,6 +32,7 @@ class UpdateAssetRequest extends FormRequest
         'fecha_compra' => ['nullable', 'date'],
         'costo' => ['nullable', 'numeric', 'min:0'],
         'observaciones' => ['nullable', 'string'],
+        'brand_id' => ['nullable', 'exists:brands,id'],
     ];
 }
 

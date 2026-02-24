@@ -38,14 +38,16 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block mb-1">Estado</label>
-                        <select name="status_id" class="w-full border rounded p-2">
-                            @foreach($statuses as $s)
-                                <option value="{{ $s->id }}" @selected(old('status_id') == $s->id)>{{ $s->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('status_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+    <label class="block mb-1">Estado</label>
+    <select name="status_id" class="w-full border rounded p-2">
+        <option value="">-- Seleccione --</option>
+        @foreach($statuses as $s)
+            <option value="{{ $s->id }}" @selected(old('status_id') == $s->id)>{{ $s->name }}</option>
+        @endforeach
+    </select>
+    @error('status_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+</div>
+
 
                     <div class="mb-4">
                         <label class="block mb-1">Ubicación</label>
@@ -57,6 +59,17 @@
                         </select>
                         @error('location_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
                     </div>
+                    <div class="mt-4">
+    <label class="block text-sm font-medium text-gray-700">Marca</label>
+    <select name="brand_id" class="mt-1 block w-full rounded border-gray-300">
+        <option value="">-- Seleccione --</option>
+        @foreach($brands as $b)
+            <option value="{{ $b->id }}" @selected(old('brand_id') == $b->id)>
+                {{ $b->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
                     <div class="mb-4">
                         <label class="block mb-1">Fecha de compra</label>
@@ -80,7 +93,7 @@
 
                     <div class="flex gap-2">
                         <a href="{{ route('assets.index') }}" class="px-4 py-2 border rounded">Cancelar</a>
-                        <button class="px-4 py-2 bg-blue-600 pu-2 texborder rounded" type="submit">Guardar</button>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded" type="submit">Guardar</button>
                     </div>
 
                 </form>

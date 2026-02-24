@@ -42,12 +42,11 @@
                     <div class="mb-4">
                         <label class="block mb-1">Estado</label>
                         <select name="status_id" class="w-full border rounded p-2">
-                            @foreach($statuses as $s)
-                                <option value="{{ $s->id }}" @selected(old('status_id', $asset->status_id) == $s->id)>
-                                    {{ $s->name }}
-                                </option>
-                            @endforeach
-                        </select>
+    @foreach($statuses as $s)
+        <option value="{{ $s->id }}" @selected(old('status_id', $asset->status_id) == $s->id)>{{ $s->name }}</option>
+    @endforeach
+</select>
+
                         @error('status_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
                     </div>
 
@@ -62,6 +61,18 @@
                         </select>
                         @error('location_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
                     </div>
+                    <div class="mt-4">
+    <label class="block text-sm font-medium text-gray-700">Marca</label>
+    <select name="brand_id" class="mt-1 block w-full rounded border-gray-300">
+        <option value="">-- Seleccione --</option>
+        @foreach($brands as $b)
+            <option value="{{ $b->id }}"
+                @selected(old('brand_id', $asset->brand_id) == $b->id)>
+                {{ $b->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
                     <div class="mb-4">
                         <label class="block mb-1">Fecha de compra</label>

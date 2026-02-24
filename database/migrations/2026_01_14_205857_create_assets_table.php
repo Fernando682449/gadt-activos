@@ -18,7 +18,7 @@ return new class extends Migration
         $table->string('numero_serie', 80)->nullable();
 
         $table->foreignId('asset_type_id')->constrained('asset_types');
-        $table->foreignId('status_id')->constrained('statuses');
+        $table->foreignId('status_id')->constrained('asset_statuses');
         $table->foreignId('location_id')->constrained('locations');
 
         $table->date('fecha_compra')->nullable();
