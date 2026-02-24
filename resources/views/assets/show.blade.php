@@ -11,16 +11,27 @@
 
                 <p><b>Código:</b> {{ $asset->codigo_patrimonial }}</p>
                 <p><b>Serie:</b> {{ $asset->numero_serie ?? '—' }}</p>
-                <p><b>Tipo:</b> {{ $asset->type?->name }}</p>
-                <p><b>Estado:</b> {{ $asset->status?->name }}</p>
-                <p><b>Ubicación:</b> {{ $asset->location?->name }}</p>
+                <p><b>Tipo:</b> {{ $asset->type?->name ?? '—' }}</p>
+                <p><b>Estado:</b> {{ $asset->status?->name ?? '—' }}</p>
+                <p><b>Ubicación:</b> {{ $asset->location?->name ?? '—' }}</p>
+
+                <!-- 🔹 NUEVO CAMPO MARCA -->
+                <p><b>Marca:</b> {{ $asset->brand?->name ?? '—' }}</p>
+
                 <p><b>Fecha compra:</b> {{ $asset->fecha_compra ?? '—' }}</p>
                 <p><b>Costo:</b> {{ $asset->costo ?? '—' }}</p>
                 <p><b>Observaciones:</b> {{ $asset->observaciones ?? '—' }}</p>
 
                 <div class="mt-4 flex gap-2">
-                    <a href="{{ route('assets.index') }}" class="px-4 py-2 border rounded">Volver</a>
-                    <a href="{{ route('assets.edit', $asset) }}" class="px-4 py-2 bg-yellow-600 text-border rounded">Editar</a>
+                    <a href="{{ route('assets.index') }}" 
+                       class="px-4 py-2 border rounded">
+                        Volver
+                    </a>
+
+                    <a href="{{ route('assets.edit', $asset) }}" 
+                       class="px-4 py-2 bg-yellow-600 text-white rounded">
+                        Editar
+                    </a>
                 </div>
 
             </div>

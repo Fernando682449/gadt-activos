@@ -16,10 +16,32 @@ class CustodianController extends Controller
     }
 
     public function index()
-    {
-        $custodians = Custodian::orderBy('nombres')->paginate(10);
-        return view('custodians.index', compact('custodians'));
+{
+    $query = Custodian::query();
+
+    if (request('q')) {
+        $q = trim(request('q'));
+
+        $query->where(function ($sub) use ($q) {
+            $sub->where('nombres', 'like', "%{$q}%")
+                ->orWhere('apellidos', 'like', "%{$q}%")
+                ->orWhere('cargo', 'like', "%{$q}%")
+                ->orWhere('unidad', 'like', "%{$q}%")
+                // ✅ nombre completo (nombres + apellidos)
+                ->orWhereRaw("CONCAT(nombres, ' ', apellidos) LIKE ?", ["%{$q}%"])
+                ->orWhereRaw("CONCAT(apellidos, ' ', nombres) LIKE ?", ["%{$q}%"]);
+        });
     }
+
+    if (request()->has('activo') && request('activo') !== '') {
+        $query->where('activo', request('activo'));
+    }
+
+    $custodians = $query->orderBy('nombres')->paginate(10)->withQueryString();
+
+    return view('custodians.index', compact('custodians'));
+}
+
 
     public function create()
     {

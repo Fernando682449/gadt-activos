@@ -9,21 +9,59 @@ class CatalogSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('statuses')->insert([
-            ['name' => 'Activo', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'En reparación', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Baja', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        // -------------------------
+        // STATUSES
+        // -------------------------
+        $statuses = [
+            'Activo',
+            'En reparación',
+            'Baja',
+        ];
 
-        DB::table('asset_types')->insert([
-            ['name' => 'Computadora', 'description' => 'PC o laptop', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Impresora', 'description' => 'Impresora o multifunción', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Red', 'description' => 'Switch, router, etc.', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        foreach ($statuses as $name) {
+            DB::table('statuses')->updateOrInsert(
+                ['name' => $name], // condición única
+                ['updated_at' => now(), 'created_at' => now()] // valores
+            );
+        }
 
-        DB::table('locations')->insert([
-            ['name' => 'DTI', 'details' => 'Dirección de Tecnologías de la Información', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Contabilidad', 'details' => null, 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        // -------------------------
+        // ASSET TYPES
+        // -------------------------
+        $types = [
+            ['name' => 'Computadora', 'description' => 'PC o laptop'],
+            ['name' => 'Impresora', 'description' => 'Impresora o multifunción'],
+            ['name' => 'Red', 'description' => 'Switch, router, etc.'],
+        ];
+
+        foreach ($types as $t) {
+            DB::table('asset_types')->updateOrInsert(
+                ['name' => $t['name']], // condición única
+                [
+                    'description' => $t['description'],
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+        }
+
+        // -------------------------
+        // LOCATIONS
+        // -------------------------
+        $locations = [
+            ['name' => 'DTI', 'details' => 'Dirección de Tecnologías de la Información'],
+            ['name' => 'Contabilidad', 'details' => null],
+        ];
+
+        foreach ($locations as $l) {
+            DB::table('locations')->updateOrInsert(
+                ['name' => $l['name']], // condición única
+                [
+                    'details' => $l['details'],
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+        }
     }
 }

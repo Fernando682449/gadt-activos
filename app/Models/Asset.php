@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Asset extends Model
 {
@@ -15,7 +16,21 @@ class Asset extends Model
         'fecha_compra',
         'costo',
         'observaciones',
+
+        'category_id',
+        'brand_id',
+        'purchase_order_number',
     ];
+
+    public function category()
+{
+    return $this->belongsTo(Category::class);
+}
+
+public function brand()
+{
+    return $this->belongsTo(\App\Models\Brand::class);
+}
 
     public function type()
     {
@@ -24,7 +39,7 @@ class Asset extends Model
 
     public function status()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(AssetStatus::class);
     }
 
     public function location()

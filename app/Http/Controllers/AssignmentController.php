@@ -18,6 +18,7 @@ class AssignmentController extends Controller
     {
         $this->middleware('auth');
     }
+    
 
     public function create()
     {
