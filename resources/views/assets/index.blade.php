@@ -9,6 +9,10 @@
                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 + Nuevo Activo
             </a>
+            <a href="{{ route('reports.assets.pdf', request()->query()) }}"
+   class="px-4 py-2 bg-gray-900 text-white rounded hover:bg-black">
+    Exportar PDF
+</a>
         </div>
     </x-slot>
 

@@ -3,6 +3,10 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Bitácora / Auditoría
         </h2>
+        <center><a href="{{ route('reports.auditlogs.pdf', request()->query()) }}"
+   class="px-4 py-2 bg-gray-900 text-white rounded hover:bg-black">
+    Exportar PDF
+</a></center>
     </x-slot>
 
     <div class="py-6">
