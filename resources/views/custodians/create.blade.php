@@ -1,66 +1,143 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Registrar Custodio
-        </h2>
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Registrar Custodio</h2>
+                <p class="page-subtitle">Crea un responsable para asignaciones de activos.</p>
+            </div>
+
+            <a href="{{ route('custodians.index') }}" class="btn-ghost">
+                ← Volver
+            </a>
+        </div>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-8 page-bg">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
 
-                <form method="POST" action="{{ route('custodians.store') }}">
+            {{-- Errores generales --}}
+            @if($errors->any())
+                <div class="alert-danger mb-6">
+                    <div class="font-semibold mb-1">Revisa los campos marcados</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach($errors->all() as $e)
+                            <li>{{ $e }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="card-hover p-6 sm:p-7">
+                <form method="POST" action="{{ route('custodians.store') }}" class="space-y-5">
                     @csrf
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Nombres</label>
-                        <input name="nombres" class="w-full border rounded p-2" value="{{ old('nombres') }}">
-                        @error('nombres') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        {{-- Nombres --}}
+                        <div>
+                            <label class="label-pro">Nombres <span class="text-red-500">*</span></label>
+                            <input
+                                name="nombres"
+                                value="{{ old('nombres') }}"
+                                class="input-pro @error('nombres') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                
+                            >
+                            @error('nombres')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Apellidos --}}
+                        <div>
+                            <label class="label-pro">Apellidos <span class="text-red-500">*</span></label>
+                            <input
+                                name="apellidos"
+                                value="{{ old('apellidos') }}"
+                                class="input-pro @error('apellidos') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                
+                            >
+                            @error('apellidos')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Apellidos</label>
-                        <input name="apellidos" class="w-full border rounded p-2" value="{{ old('apellidos') }}">
-                        @error('apellidos') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        {{-- Cargo --}}
+                        <div>
+                            <label class="label-pro">Cargo</label>
+                            <input
+                                name="cargo"
+                                value="{{ old('cargo') }}"
+                                class="input-pro @error('cargo') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                placeholder="Ej: Técnico TI"
+                            >
+                            @error('cargo')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Unidad --}}
+                        <div>
+                            <label class="label-pro">Unidad</label>
+                            <input
+                                name="unidad"
+                                value="{{ old('unidad') }}"
+                                class="input-pro @error('unidad') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                placeholder="Ej: DTI"
+                            >
+                            @error('unidad')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Cargo</label>
-                        <input name="cargo" class="w-full border rounded p-2" value="{{ old('cargo') }}">
-                        @error('cargo') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    {{-- Email --}}
+                    <div>
+                        <label class="label-pro">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            class="input-pro @error('email') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                            placeholder="Ej: usuario@tarija.gob.bo"
+                        >
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Unidad</label>
-                        <input name="unidad" class="w-full border rounded p-2" value="{{ old('unidad') }}">
-                        @error('unidad') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block mb-1">Email</label>
-                        <input name="email" class="w-full border rounded p-2" value="{{ old('email') }}">
-                        @error('email') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block mb-1">Estado</label>
-                        <select name="activo" class="w-full border rounded p-2">
+                    {{-- Estado --}}
+                    <div>
+                        <label class="label-pro">Estado</label>
+                        <select
+                            name="activo"
+                            class="select-pro @error('activo') border-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                        >
                             <option value="1" @selected(old('activo', '1') == '1')>Activo</option>
                             <option value="0" @selected(old('activo') == '0')>Inactivo</option>
                         </select>
-                        @error('activo') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                        @error('activo')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div class="flex gap-2 mt-4">
-                        <a href="{{ route('custodians.index') }}" class="px-4 py-2 border rounded">Cancelar</a>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-border rounded hover:bg-blue-700">
-                            Guardar
+                    {{-- Acciones --}}
+                    <div class="pt-2 flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <a href="{{ route('custodians.index') }}" class="btn-outline">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn-brand">
+                            Guardar Custodio
                         </button>
                     </div>
 
                 </form>
-
             </div>
+
+            <p class="mt-4 text-xs text-gray-500 text-center">
+                Los campos con <span class="text-red-500">*</span> son obligatorios.
+            </p>
+
         </div>
     </div>
 </x-app-layout>

@@ -1,60 +1,90 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+    <div class="login-card">
+        <div class="text-center">
+            {{-- Logo arriba del título --}}
+            <div class="mx-auto mb-4 h-14 w-14 rounded-2xl bg-white shadow-soft flex items-center justify-center overflow-hidden border">
+                <img src="{{ asset('img/2.jpg') }}" alt="Logo" class="h-10 w-10 object-contain">
+            </div>
+
+            <div class="text-xs font-semibold tracking-widest text-gray-700">
+                GOBIERNO AUTÓNOMO
+            </div>
+            <div class="text-xs font-semibold tracking-widest text-gray-700">
+                DEPARTAMENTAL DE TARIJA
+            </div>
+
+            <h2 class="login-title mt-4">Crear cuenta</h2>
+            <p class="login-subtitle">Registra un nuevo usuario para acceder al sistema</p>
+        </div>
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" class="space-y-5">
             @csrf
 
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                <label for="name" class="label-pro">Nombre completo</label>
+                <input id="name"
+                       name="name"
+                       type="text"
+                       value="{{ old('name') }}"
+                       required
+                       autofocus
+                       autocomplete="name"
+                       class="input-pro"
+                       placeholder="Ej: Juan Pérez">
             </div>
 
-            <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            <div>
+                <label for="email" class="label-pro">Correo electrónico</label>
+                <input id="email"
+                       name="email"
+                       type="email"
+                       value="{{ old('email') }}"
+                       required
+                       autocomplete="username"
+                       class="input-pro"
+                       placeholder="ejemplo@correo.com">
             </div>
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+            <div>
+                <label for="password" class="label-pro">Contraseña</label>
+                <input id="password"
+                       name="password"
+                       type="password"
+                       required
+                       autocomplete="new-password"
+                       class="input-pro"
+                       placeholder="••••••••">
+                <p class="mt-1 text-xs text-gray-500">
+                    Usa una contraseña segura (mínimo 8 caracteres).
+                </p>
             </div>
 
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+            <div>
+                <label for="password_confirmation" class="label-pro">Confirmar contraseña</label>
+                <input id="password_confirmation"
+                       name="password_confirmation"
+                       type="password"
+                       required
+                       autocomplete="new-password"
+                       class="input-pro"
+                       placeholder="••••••••">
             </div>
 
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
+            <button type="submit" class="btn-primary w-full py-3 text-base">
+                Registrar usuario
+            </button>
 
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
-                                ]) !!}
-                            </div>
-                        </div>
-                    </x-label>
-                </div>
-            @endif
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
+            <div class="text-center">
+                <a href="{{ route('login') }}" class="text-sm font-semibold text-brand-700 hover:text-brand-800 smooth">
+                    ¿Ya tienes cuenta? Inicia sesión
                 </a>
-
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
             </div>
+
+            <p class="text-center text-xs text-gray-500 mt-2">
+                Si tienes problemas de acceso, contacta al administrador.
+            </p>
         </form>
-    </x-authentication-card>
+    </div>
 </x-guest-layout>

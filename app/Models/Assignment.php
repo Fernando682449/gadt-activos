@@ -8,7 +8,7 @@ class Assignment extends Model
 {
     protected $fillable = [
         'asset_id','custodian_id','location_id','tipo_movimiento',
-        'fecha_asignacion','observaciones','user_id'
+        'fecha_asignacion','observaciones','user_id','acta_pdf_path'
     ];
 
     public function asset() { return $this->belongsTo(Asset::class); }

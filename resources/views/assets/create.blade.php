@@ -1,104 +1,202 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Registrar Activo
-        </h2>
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Registrar Activo</h2>
+                <p class="page-subtitle">Complete la información para registrar un nuevo activo en el sistema.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <a href="{{ route('assets.index') }}" class="btn-ghost">Volver</a>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-8 page-bg">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
 
-                <form method="POST" action="{{ route('assets.store') }}">
-                    @csrf
+            @if ($errors->any())
+                <div class="alert-danger mb-6">
+                    <div class="font-semibold mb-1">Revisa los campos marcados</div>
+                    <ul class="list-disc ms-5">
+                        @foreach ($errors->all() as $error)
+                            <li class="text-sm">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Código patrimonial</label>
-                        <input name="codigo_patrimonial" class="w-full border rounded p-2"
-                               value="{{ old('codigo_patrimonial') }}">
-                        @error('codigo_patrimonial') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+            <div class="card-hover overflow-hidden">
+                {{-- Header del card --}}
+                <div class="p-6 border-b border-gray-200 flex items-start justify-between">
+                    <div>
+                        <div class="text-sm text-gray-500">Formulario</div>
+                        <div class="text-xl font-extrabold text-gray-900">Datos del activo</div>
                     </div>
+                    <span class="status-ok">Registro</span>
+                </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Número de serie</label>
-                        <input name="numero_serie" class="w-full border rounded p-2"
-                               value="{{ old('numero_serie') }}">
-                        @error('numero_serie') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                <div class="p-6">
+                    <form method="POST" action="{{ route('assets.store') }}" class="space-y-6">
+                        @csrf
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Tipo</label>
-                        <select name="asset_type_id" class="w-full border rounded p-2">
-                            <option value="">-- Seleccione --</option>
-                            @foreach($types as $t)
-                                <option value="{{ $t->id }}" @selected(old('asset_type_id') == $t->id)>{{ $t->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('asset_type_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                        {{-- Código / Serie --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="label-pro">Código patrimonial</label>
+                                <input
+                                    name="codigo_patrimonial"
+                                    class="input-pro-2"
+                                    value="{{ old('codigo_patrimonial') }}"
+                                    placeholder="Ej: GADT-0001"
+                                >
+                                @error('codigo_patrimonial')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="mb-4">
-    <label class="block mb-1">Estado</label>
-    <select name="status_id" class="w-full border rounded p-2">
-        <option value="">-- Seleccione --</option>
-        @foreach($statuses as $s)
-            <option value="{{ $s->id }}" @selected(old('status_id') == $s->id)>{{ $s->name }}</option>
-        @endforeach
-    </select>
-    @error('status_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-</div>
+                            <div>
+                                <label class="label-pro">Número de serie</label>
+                                <input
+                                    name="numero_serie"
+                                    class="input-pro-2"
+                                    value="{{ old('numero_serie') }}"
+                                    placeholder="Ej: SN123456"
+                                >
+                                @error('numero_serie')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
 
+                        {{-- Tipo / Estado --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="label-pro">Tipo</label>
+                                <select name="asset_type_id" class="select-pro-2">
+                                    <option value="">-- Seleccione --</option>
+                                    @foreach($types as $t)
+                                        <option value="{{ $t->id }}" @selected(old('asset_type_id') == $t->id)>
+                                            {{ $t->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('asset_type_id')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Ubicación</label>
-                        <select name="location_id" class="w-full border rounded p-2">
-                            <option value="">-- Seleccione --</option>
-                            @foreach($locations as $l)
-                                <option value="{{ $l->id }}" @selected(old('location_id') == $l->id)>{{ $l->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('location_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
-                    <div class="mt-4">
-    <label class="block text-sm font-medium text-gray-700">Marca</label>
-    <select name="brand_id" class="mt-1 block w-full rounded border-gray-300">
-        <option value="">-- Seleccione --</option>
-        @foreach($brands as $b)
-            <option value="{{ $b->id }}" @selected(old('brand_id') == $b->id)>
-                {{ $b->name }}
-            </option>
-        @endforeach
-    </select>
-</div>
+                            <div>
+                                <label class="label-pro">Estado</label>
+                                <select name="status_id" class="select-pro-2">
+                                    <option value="">-- Seleccione --</option>
+                                    @foreach($statuses as $s)
+                                        <option value="{{ $s->id }}" @selected(old('status_id') == $s->id)>
+                                            {{ $s->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('status_id')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Fecha de compra</label>
-                        <input type="date" name="fecha_compra" class="w-full border rounded p-2"
-                               value="{{ old('fecha_compra') }}">
-                        @error('fecha_compra') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                        {{-- Ubicación / Marca --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="label-pro">Ubicación</label>
+                                <select name="location_id" class="select-pro-2">
+                                    <option value="">-- Seleccione --</option>
+                                    @foreach($locations as $l)
+                                        <option value="{{ $l->id }}" @selected(old('location_id') == $l->id)>
+                                            {{ $l->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('location_id')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Costo</label>
-                        <input type="number" step="0.01" name="costo" class="w-full border rounded p-2"
-                               value="{{ old('costo') }}">
-                        @error('costo') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                            <div>
+                                <label class="label-pro">Marca</label>
+                                <select name="brand_id" class="select-pro-2">
+                                    <option value="">-- Seleccione --</option>
+                                    @foreach($brands as $b)
+                                        <option value="{{ $b->id }}" @selected(old('brand_id') == $b->id)>
+                                            {{ $b->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('brand_id')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
 
-                    <div class="mb-4">
-                        <label class="block mb-1">Observaciones</label>
-                        <textarea name="observaciones" class="w-full border rounded p-2" rows="3">{{ old('observaciones') }}</textarea>
-                        @error('observaciones') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                        {{-- Fecha / Costo --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="label-pro">Fecha de compra</label>
+                                <input
+                                    type="date"
+                                    name="fecha_compra"
+                                    class="input-pro-2"
+                                    value="{{ old('fecha_compra') }}"
+                                >
+                                @error('fecha_compra')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="flex gap-2">
-                        <a href="{{ route('assets.index') }}" class="px-4 py-2 border rounded">Cancelar</a>
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded" type="submit">Guardar</button>
-                    </div>
+                            <div>
+                                <label class="label-pro">Costo</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="costo"
+                                    class="input-pro-2"
+                                    value="{{ old('costo') }}"
+                                    placeholder="0.00"
+                                >
+                                @error('costo')
+                                    <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
 
-                </form>
+                        {{-- Observaciones --}}
+                        <div>
+                            <label class="label-pro">Observaciones</label>
+                            <textarea
+                                name="observaciones"
+                                class="input-pro-2"
+                                rows="4"
+                                placeholder="Detalle adicional del activo (opcional)."
+                            >{{ old('observaciones') }}</textarea>
+                            @error('observaciones')
+                                <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
 
+                        {{-- Acciones --}}
+                        <div class="pt-2 flex flex-col sm:flex-row gap-2 sm:justify-end">
+                            <a href="{{ route('assets.index') }}" class="btn-ghost">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn-brand">
+                                Guardar Activo
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+            <p class="mt-4 text-xs text-gray-500 text-center">
+                Tip: Usa un código patrimonial único para facilitar búsquedas y auditoría.
+            </p>
+
         </div>
     </div>
 </x-app-layout>

@@ -14,7 +14,7 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        Dashboard
+                        Panel Principal
                     </x-nav-link>
 
                     @can('assets.view')
@@ -43,7 +43,7 @@
 
                     @can('auditlogs.view')
                         <x-nav-link href="{{ route('audit-logs.index') }}" :active="request()->routeIs('audit-logs.*')">
-                            Bitácora
+                            Historial de acciones 
                         </x-nav-link>
                     @endcan
 
@@ -78,37 +78,48 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <div class="ms-3 relative">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                            </button>
-                        </x-slot>
+<div class="hidden sm:flex sm:items-center sm:ms-6">
+    <div class="ms-3 relative">
+        <x-dropdown align="right" width="56">
+            <x-slot name="trigger">
+                <button class="flex items-center gap-2 px-2 py-1 text-sm bg-white/70 backdrop-blur-md border border-gray-200 rounded-full shadow-sm hover:shadow-md hover:border-indigo-400 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    
+                    <img class="h-9 w-9 rounded-full object-cover border-2 border-indigo-400 shadow-sm"
+                         src="{{ Auth::user()->profile_photo_url }}"
+                         alt="{{ Auth::user()->name }}" />
 
-                        <x-slot name="content">
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                Cuenta
-                            </div>
+                    <span class="hidden md:block text-gray-700 font-medium">
+                        {{ Auth::user()->name }}
+                    </span>
+                </button>
+            </x-slot>
 
-                            <x-dropdown-link href="{{ route('profile.show') }}">
-                                Perfil
-                            </x-dropdown-link>
-
-                            <div class="border-t border-gray-200"></div>
-
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link href="{{ route('logout') }}"
-                                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                    Cerrar sesión
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
+            <x-slot name="content">
+                <div class="block px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 rounded-t-lg">
+                    Cuenta
                 </div>
-            </div>
+
+                <x-dropdown-link 
+                    href="{{ route('profile.show') }}"
+                    class="hover:bg-indigo-50 hover:text-indigo-600 transition duration-200">
+                    Perfil
+                </x-dropdown-link>
+
+                <div class="border-t border-gray-200"></div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link 
+                        href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); this.closest('form').submit();"
+                        class="text-red-500 hover:bg-red-50 hover:text-red-600 transition duration-200">
+                        Cerrar sesión
+                    </x-dropdown-link>
+                </form>
+            </x-slot>
+        </x-dropdown>
+    </div>
+</div>
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -127,7 +138,7 @@
         <div class="pt-2 pb-3 space-y-1">
 
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                Dashboard
+                Panel Principal
             </x-responsive-nav-link>
 
             @can('assets.view')
@@ -156,7 +167,7 @@
 
             @can('auditlogs.view')
                 <x-responsive-nav-link href="{{ route('audit-logs.index') }}" :active="request()->routeIs('audit-logs.*')">
-                    Bitácora
+                    Historial de acciones
                 </x-responsive-nav-link>
             @endcan
 

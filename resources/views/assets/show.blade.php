@@ -1,40 +1,140 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Detalle del Activo
-        </h2>
-    </x-slot>
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Detalle del Activo</h2>
+                <p class="page-subtitle">Información general y movimientos registrados.</p>
+            </div>
 
-    <div class="py-6">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('assets.index') }}" class="btn-ghost">
+                    Volver
+                </a>
 
-                <p><b>Código:</b> {{ $asset->codigo_patrimonial }}</p>
-                <p><b>Serie:</b> {{ $asset->numero_serie ?? '—' }}</p>
-                <p><b>Tipo:</b> {{ $asset->type?->name ?? '—' }}</p>
-                <p><b>Estado:</b> {{ $asset->status?->name ?? '—' }}</p>
-                <p><b>Ubicación:</b> {{ $asset->location?->name ?? '—' }}</p>
-
-                <!-- 🔹 NUEVO CAMPO MARCA -->
-                <p><b>Marca:</b> {{ $asset->brand?->name ?? '—' }}</p>
-
-                <p><b>Fecha compra:</b> {{ $asset->fecha_compra ?? '—' }}</p>
-                <p><b>Costo:</b> {{ $asset->costo ?? '—' }}</p>
-                <p><b>Observaciones:</b> {{ $asset->observaciones ?? '—' }}</p>
-
-                <div class="mt-4 flex gap-2">
-                    <a href="{{ route('assets.index') }}" 
-                       class="px-4 py-2 border rounded">
-                        Volver
-                    </a>
-
-                    <a href="{{ route('assets.edit', $asset) }}" 
-                       class="px-4 py-2 bg-yellow-600 text-white rounded">
+                @can('assets.edit')
+                    <a href="{{ route('assets.edit', $asset) }}" class="btn-warning">
                         Editar
                     </a>
+                @endcan
+            </div>
+        </div>
+    </x-slot>
+
+    <div class="py-8 page-bg">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
+
+            {{-- ✅ Detalle --}}
+            <div class="card p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-gray-500">Código patrimonial</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->codigo_patrimonial }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Número de serie</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->numero_serie ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Tipo</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->type?->name ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Estado</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->status?->name ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Ubicación</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->location?->name ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Marca</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->brand?->name ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Fecha de compra</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->fecha_compra ?? '—' }}</div>
+                    </div>
+
+                    <div>
+                        <div class="text-gray-500">Costo</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->costo ?? '—' }}</div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <div class="text-gray-500">Observaciones</div>
+                        <div class="font-semibold text-gray-900">{{ $asset->observaciones ?? '—' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ✅ Historial de Movimientos / Asignaciones --}}
+            <div class="table-card">
+                <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-600">Historial de movimientos</div>
+                        <div class="text-xs text-gray-500">Asignaciones, reasignaciones y traslados del activo.</div>
+                    </div>
+                    <span class="status-ok">Historial</span>
                 </div>
 
+                <div class="overflow-x-auto">
+                    <table class="table-pro-2">
+                        <thead class="table-head">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Movimiento</th>
+                                <th>Custodio</th>
+                                <th>Ubicación</th>
+                                <th>Observaciones</th>
+                                <th class="text-right">Acta</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @forelse($movimientos as $m)
+                                <tr>
+                                    <td class="whitespace-nowrap">{{ $m->fecha_asignacion ?? '—' }}</td>
+                                    <td class="whitespace-nowrap">
+                                        <span class="status-neutral">{{ $m->tipo_movimiento ?? '—' }}</span>
+                                    </td>
+                                    <td>{{ $m->custodian?->nombre_completo ?? '—' }}</td>
+                                    <td>{{ $m->location?->name ?? '—' }}</td>
+                                    <td class="text-gray-700">{{ $m->observaciones ?? '—' }}</td>
+
+                                    <td class="text-right whitespace-nowrap">
+                                        @if(!empty($m->acta_pdf_path))
+                                            <a href="{{ route('assignments.acta', $m) }}" class="link-view">
+                                                Descargar PDF
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400">—</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-10 text-center text-gray-500">
+                                        Este activo todavía no tiene movimientos registrados.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Si $movimientos es paginado, puedes activar esto:
+                <div class="p-4 sm:p-5 border-t border-gray-200">
+                    {{ $movimientos->links() }}
+                </div>
+                --}}
             </div>
+
         </div>
     </div>
 </x-app-layout>
