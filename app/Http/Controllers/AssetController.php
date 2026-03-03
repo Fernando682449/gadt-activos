@@ -104,7 +104,12 @@ class AssetController extends Controller
             ->latest()
             ->first();
 
-        return view('assets.show', compact('asset', 'histories', 'lastAssignment'));
+        $movimientos = $asset->assignments()
+        ->with(['custodian','location'])
+        ->orderByDesc('fecha_asignacion')
+        ->get();
+
+        return view('assets.show', compact('asset', 'histories', 'lastAssignment', 'movimientos'));
     }
 
     public function edit(Asset $asset)

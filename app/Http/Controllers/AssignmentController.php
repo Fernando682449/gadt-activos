@@ -11,6 +11,9 @@ use App\Models\Location;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AssignmentController extends Controller
 {
@@ -44,6 +47,17 @@ class AssignmentController extends Controller
                 'observaciones' => $data['observaciones'] ?? null,
                 'user_id' => Auth::id(),
             ]);
+            $assignment->load(['asset','custodian','location']);
+
+$pdf = Pdf::loadView('pdf.acta-asignacion', compact('assignment'));
+
+$filename = 'actas/acta_'.$assignment->id.'_'.Str::slug($assignment->tipo_movimiento).'_'.now()->format('Ymd_His').'.pdf';
+
+Storage::disk('public')->put($filename, $pdf->output());
+
+$assignment->update([
+    'acta_pdf_path' => $filename
+]);
 
             $asset = Asset::findOrFail($data['asset_id']);
             $asset->update(['location_id' => $data['location_id']]);

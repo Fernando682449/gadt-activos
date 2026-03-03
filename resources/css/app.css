@@ -3,164 +3,403 @@
 @tailwind utilities;
 
 [x-cloak] {
-    display: none;
+  display: none;
 }
 
+/* =========================
+   BASE GLOBAL
+========================== */
 @layer base {
-    html {
-        scroll-behavior: smooth;
-    }
+  html {
+    scroll-behavior: smooth;
+  }
 
-    body {
-        @apply text-gray-800 bg-gray-50;
-    }
+  body {
+    @apply text-gray-800 bg-gray-50 antialiased;
+  }
 }
 
+/* =========================
+   UTILIDADES EXTRA
+========================== */
 @layer utilities {
-    /* sombra suave tipo portal */
-    .shadow-soft {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-    }
+  .shadow-soft {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  }
 
-    /* fondo suave para páginas */
-    .page-bg {
-        @apply bg-gradient-to-b from-gray-50 to-white;
-    }
+  .shadow-elegant {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .page-bg {
+    @apply bg-gradient-to-b from-gray-50 to-white;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/40;
+  }
+
+  .smooth {
+    @apply transition duration-200 ease-in-out;
+  }
+}
+@layer utilities {
+  /* Fondo institucional con marca de agua */
+  .gadt-bg {
+    background:
+      radial-gradient(1200px 600px at 20% 0%, rgba(34,197,94,0.10), transparent 55%),
+      radial-gradient(900px 500px at 100% 15%, rgba(59,130,246,0.08), transparent 55%),
+      linear-gradient(to bottom, #f8fafc, #ffffff);
+  }
+
+  /* Marca de agua (escudo) */
+  .gadt-watermark {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Línea superior institucional */
+  .gadt-topline {
+    background: linear-gradient(90deg, #c11c1c, #22c55e, #0ea5e9);
+    height: 4px;
+  }
 }
 
 @layer components {
-    /* =========================
-        BOTONES
-    ========================== */
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition
-               focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed;
-    }
+  /* Header tipo “hero” */
+  .hero-card {
+    @apply rounded-3xl border border-gray-200 bg-white/70 backdrop-blur-md shadow-soft;
+  }
 
-    .btn-primary {
-        @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500;
-    }
+  .hero-title {
+    @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900;
+  }
 
-    .btn-outline {
-        @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-300;
-    }
+  .hero-subtitle {
+    @apply text-sm text-gray-600;
+  }
 
-    .btn-dark {
-        @apply btn bg-gray-900 text-white hover:bg-black focus:ring-gray-700;
-    }
+  /* Cards de estadísticas */
+  .stat-pro {
+    @apply rounded-2xl border border-gray-200 bg-white shadow-soft transition;
+  }
+  .stat-pro:hover {
+    box-shadow: 0 18px 55px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+  }
 
-    .btn-danger {
-        @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
-    }
+  /* Cards de módulos */
+  .module-pro {
+    @apply rounded-2xl border border-gray-200 bg-white shadow-soft transition;
+  }
+  .module-pro:hover {
+    box-shadow: 0 18px 55px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+  }
 
-    .btn-warning {
-        @apply btn bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-400;
-    }
+  /* Chip/círculo de número */
+  .chip-circle {
+    @apply h-12 w-12 rounded-2xl flex items-center justify-center font-extrabold;
+  }
 
-    /* Botón pequeño */
-    .btn-sm {
-        @apply rounded-full px-3 py-1 text-xs font-semibold;
-    }
+  /* Separador suave */
+  .soft-divider {
+    @apply border-t border-gray-200/70;
+  }
+}
 
-    /* =========================
-        TARJETAS / CONTENEDORES
-    ========================== */
-    .card {
-        @apply bg-white border border-gray-200 rounded-2xl shadow-sm;
-    }
+/* =========================
+   COMPONENTES
+========================== */
+@layer components {
 
-    .card-hover {
-        @apply card hover:shadow-soft transition;
-    }
+  /* ====== TOP BAR / HEADER ====== */
+  .page-header {
+    @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+  }
 
-    .section-title {
-        @apply text-lg font-bold text-gray-900;
-    }
+  .page-title {
+    @apply text-2xl font-extrabold tracking-tight text-gray-900;
+  }
 
-    .section-subtitle {
-        @apply text-sm text-gray-600;
-    }
+  .page-subtitle {
+    @apply text-sm text-gray-600;
+  }
+  @layer components {
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-semibold text-gray-700 rounded-lg transition;
+  }
 
-    /* =========================
-        FORMULARIOS (Inputs)
-    ========================== */
-    .input-pro {
-        @apply mt-1 block w-full rounded-lg border-gray-300 shadow-sm
-               focus:border-brand-600 focus:ring-brand-600;
-    }
+  .nav-link:hover {
+    @apply bg-gray-100 text-gray-900;
+  }
 
-    .select-pro {
-        @apply mt-1 block w-full rounded-lg border-gray-300 shadow-sm
-               focus:border-brand-600 focus:ring-brand-600;
-    }
+  .nav-link-active {
+    @apply text-brand-700;
+  }
 
-    .textarea-pro {
-        @apply mt-1 block w-full rounded-lg border-gray-300 shadow-sm
-               focus:border-brand-600 focus:ring-brand-600;
-    }
+  .nav-link-active::after {
+    content: "";
+    @apply absolute left-3 right-3 -bottom-[9px] h-[3px] rounded-full bg-brand-600;
+  }
 
-    .label-pro {
-        @apply block text-sm font-medium text-gray-700;
-    }
+  .dropdown-item {
+    @apply block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition;
+  }
 
-    /* =========================
-        TABLAS PRO
-    ========================== */
-    .table-pro {
-        @apply w-full text-sm;
-    }
+  .mobile-link {
+    @apply block rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition;
+  }
 
-    .table-pro thead th {
-        @apply bg-gray-50 text-gray-700 font-semibold border-b px-3 py-2 text-left;
-    }
+  .mobile-link-active {
+    @apply bg-gray-100 text-brand-700;
+  }
+}
 
-    .table-pro tbody td {
-        @apply border-b px-3 py-2 text-gray-800;
-    }
+  /* =========================
+      BOTONES PROFESIONALES
+  ========================== */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-xl px-4 py-2 text-sm font-semibold
+           transition duration-200 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
 
-    .table-pro tbody tr {
-        @apply hover:bg-gray-50;
-    }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:brightness-110 focus:ring-brand-500 shadow-soft;
+  }
 
-    /* =========================
-        BADGES / ESTADOS
-    ========================== */
-    .badge {
-        @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
-    }
+  .btn-outline {
+    @apply btn border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-300;
+  }
 
-    .badge-green {
-        @apply badge bg-brand-100 text-brand-800;
-    }
+  .btn-dark {
+    @apply btn bg-gray-900 text-white hover:bg-black focus:ring-gray-700;
+  }
 
-    .badge-gray {
-        @apply badge bg-gray-100 text-gray-800;
-    }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
 
-    .badge-red {
-        @apply badge bg-red-100 text-red-800;
-    }
+  .btn-warning {
+    @apply btn bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-400;
+  }
 
-    .badge-amber {
-        @apply badge bg-amber-100 text-amber-800;
-    }
+  .btn-sm {
+    @apply rounded-full px-3 py-1 text-xs font-semibold;
+  }
 
-    /* =========================
-        ALERTAS
-    ========================== */
-    .alert {
-        @apply rounded-xl border p-4 text-sm;
-    }
+  /* Botones usados en el dashboard/listados */
+  .btn-brand {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500 shadow-soft;
+  }
 
-    .alert-success {
-        @apply alert bg-green-50 border-green-200 text-green-800;
-    }
+  .btn-dark-soft {
+    @apply btn bg-gray-900 text-white hover:bg-black focus:ring-gray-700 shadow-soft;
+  }
 
-    .alert-danger {
-        @apply alert bg-red-50 border-red-200 text-red-800;
-    }
+  .btn-ghost {
+    @apply btn border border-gray-200 text-gray-700 hover:bg-gray-50 focus:ring-gray-200;
+  }
 
-    .alert-info {
-        @apply alert bg-blue-50 border-blue-200 text-blue-800;
-    }
+  
+
+  /* =========================
+      TARJETAS / CONTENEDORES
+  ========================== */
+  .card {
+    @apply bg-white border border-gray-200 rounded-2xl shadow-soft;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-elegant smooth;
+  }
+
+  .card-glass {
+    @apply glass rounded-2xl shadow-elegant;
+  }
+
+  .section-title {
+    @apply text-lg font-bold text-gray-900;
+  }
+
+  .section-subtitle {
+    @apply text-sm text-gray-600;
+  }
+
+  /* =========================
+      FORMULARIOS (Inputs)
+  ========================== */
+  .label-pro {
+    @apply block text-sm font-medium text-gray-700;
+  }
+
+  .input-pro {
+    @apply mt-1 block w-full rounded-xl border-gray-300 bg-white shadow-sm
+           focus:border-brand-600 focus:ring-brand-600 transition duration-200 ease-in-out;
+  }
+
+  .select-pro {
+    @apply input-pro;
+  }
+
+  .textarea-pro {
+    @apply input-pro;
+  }
+
+  /* Para filtros del listado */
+  .filters-card {
+    @apply card p-5;
+  }
+
+  .filters-grid {
+    @apply grid grid-cols-1 md:grid-cols-6 gap-4;
+  }
+
+  .filters-actions {
+    @apply flex flex-wrap gap-2 md:col-span-6;
+  }
+
+  .input-pro-2 {
+    @apply w-full rounded-xl border-gray-300 bg-white shadow-sm
+           focus:border-brand-600 focus:ring-brand-600 transition;
+  }
+
+  .select-pro-2 {
+    @apply input-pro-2;
+  }
+
+  /* =========================
+      TABLAS PRO
+  ========================== */
+  .table-card {
+    @apply card overflow-hidden;
+  }
+
+  .table-head {
+    @apply bg-gray-50;
+  }
+
+  .table-pro {
+    @apply w-full text-sm border-collapse;
+  }
+
+  .table-pro thead th {
+    @apply bg-gray-50 text-gray-700 font-semibold border-b px-4 py-3 text-left;
+  }
+
+  .table-pro tbody td {
+    @apply border-b px-4 py-3 text-gray-800;
+  }
+
+  .table-pro tbody tr {
+    @apply hover:bg-gray-50 smooth;
+  }
+
+  .table-pro-2 {
+    @apply w-full text-sm;
+  }
+
+  .table-pro-2 th {
+    @apply px-4 py-3 text-left font-semibold text-gray-700 border-b;
+  }
+
+  .table-pro-2 td {
+    @apply px-4 py-3 text-gray-800 border-b;
+  }
+
+  .table-pro-2 tr {
+    @apply hover:bg-gray-50 transition;
+  }
+
+  .table-actions a {
+    @apply font-medium;
+  }
+
+  .link-view {
+    @apply text-blue-700 hover:underline;
+  }
+
+  .link-edit {
+    @apply text-amber-700 hover:underline;
+  }
+
+  .link-delete {
+    @apply text-red-600 hover:underline;
+  }
+
+  /* =========================
+      BADGES / ESTADOS
+  ========================== */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .badge-green {
+    @apply badge bg-brand-100 text-brand-800;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-100 text-gray-800;
+  }
+
+  .badge-red {
+    @apply badge bg-red-100 text-red-800;
+  }
+
+  .badge-amber {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .status-ok {
+    @apply status-pill bg-brand-100 text-brand-800;
+  }
+
+  .status-warn {
+    @apply status-pill bg-amber-100 text-amber-800;
+  }
+
+  .status-bad {
+    @apply status-pill bg-red-100 text-red-800;
+  }
+
+  .status-neutral {
+    @apply status-pill bg-gray-100 text-gray-800;
+  }
+
+  /* =========================
+      ALERTAS
+  ========================== */
+  .alert {
+    @apply rounded-xl border p-4 text-sm;
+  }
+
+  .alert-success {
+    @apply alert bg-green-50 border-green-200 text-green-800;
+  }
+
+  .alert-danger {
+    @apply alert bg-red-50 border-red-200 text-red-800;
+  }
+
+  .alert-info {
+    @apply alert bg-blue-50 border-blue-200 text-blue-800;
+  }
+
+  /* =========================
+      LOGIN
+  ========================== */
+  .login-title {
+    @apply text-2xl font-bold text-gray-900 text-center;
+  }
+
+  .login-subtitle {
+    @apply text-sm text-gray-600 text-center;
+  }
 }

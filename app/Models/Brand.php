@@ -11,7 +11,9 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'activo',
+    'observacion'
     ];
 
     public function assets()

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\CustodianController;
@@ -10,11 +10,14 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Auth\RegisterController;
 
 use App\Models\Asset;
 use App\Models\Custodian;
 use App\Models\Brand;
 use App\Models\AuditLog;
+use App\Models\Assignment;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +35,14 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
+    /*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -126,6 +137,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->post('/assignments', [AssignmentController::class, 'store'])
         ->name('assignments.store');
 
+    Route::middleware(['auth','verified','permission:assignments.view'])
+    ->get('/assignments/{assignment}/acta', function (Assignment $assignment) {
+        abort_unless($assignment->acta_pdf_path, 404);
+        return response()->download(storage_path('app/public/'.$assignment->acta_pdf_path));
+    })->name('assignments.acta');
+    Route::get('/assignments/{assignment}/acta', [AssignmentController::class, 'acta'])
+    ->name('assignments.acta');
     /*
     |--------------------------------------------------------------------------
     | Maintenances
@@ -195,10 +213,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('brands.destroy');
 
     /*
+    
     |--------------------------------------------------------------------------
     | Profile
     |--------------------------------------------------------------------------
     */
+    /*
+|--------------------------------------------------------------------------
+| Users (solo Administrador)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('role:Administrador')->group(function () {
+    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])
+        ->name('users.index');
+
+    Route::get('/users/create', [\App\Http\Controllers\UserController::class, 'create'])
+        ->name('users.create');
+
+    Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])
+        ->name('users.store');
+});
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
