@@ -11,6 +11,9 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\CustodyController;
+
 
 use App\Models\Asset;
 use App\Models\Custodian;
@@ -91,6 +94,11 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
         ->delete('/assets/{asset}', [AssetController::class, 'destroy'])
         ->name('assets.destroy');
 
+
+    Route::middleware('permission:assets.view')->group(function () {
+    Route::get('/custodia', [CustodyController::class, 'index'])->name('custody.index');
+    Route::get('/custodia/{custodian}', [CustodyController::class, 'show'])->name('custody.show');
+});
     /*
     |--------------------------------------------------------------------------
     | Custodians
@@ -124,6 +132,9 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
         ->delete('/custodians/{custodian}', [CustodianController::class, 'destroy'])
         ->name('custodians.destroy');
 
+        Route::post('/custodia/{custodian}/assets/{asset}/devolver', [CustodyController::class, 'devolver'])
+    ->name('custody.devolver');
+
     /*
     |--------------------------------------------------------------------------
     | Assignments
@@ -144,6 +155,10 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     })->name('assignments.acta');
     Route::get('/assignments/{assignment}/acta', [AssignmentController::class, 'acta'])
     ->name('assignments.acta');
+
+    Route::get('/assignments/{assignment}/acta', [AssignmentController::class, 'actaPdf'])
+    ->name('assignments.acta');
+
     /*
     |--------------------------------------------------------------------------
     | Maintenances
@@ -212,12 +227,54 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
         ->delete('/brands/{brand}', [BrandController::class, 'destroy'])
         ->name('brands.destroy');
 
-    /*
+    Route::middleware('permission:assets.view')
+    ->get('/assets/{asset}/alta-pdf', [AssetController::class, 'altaPdf'])
+    ->name('assets.alta.pdf');
+
+    Route::middleware('permission:assignments.view')
+  ->get('/assignments/{assignment}/acta-pdf', [AssignmentController::class, 'actaPdf'])
+  ->name('assignments.acta.pdf');
+
+  Route::post('/custodia/{custodian}/assets/{asset}/devolver', [CustodyController::class, 'devolver'])
+    ->name('custody.devolver');
+
+Route::get('/assignments/{assignment}/devolucion-pdf', [AssignmentController::class, 'devolucionPdf'])
+    ->name('assignments.devolucion.pdf');
+
     
-    |--------------------------------------------------------------------------
-    | Profile
-    |--------------------------------------------------------------------------
-    */
+    Route::middleware(['auth','verified'])->group(function () {
+
+    Route::get('/api/assets/search', function (Request $request) {
+        $q = $request->get('q', '');
+        return \App\Models\Asset::query()
+            ->where('codigo_patrimonial', 'like', "%{$q}%")
+            ->orWhere('numero_serie', 'like', "%{$q}%")
+            ->limit(30)
+            ->get()
+            ->map(fn($a) => [
+                'id' => $a->id,
+                'text' => "{$a->codigo_patrimonial} — {$a->numero_serie}",
+            ]);
+    })->name('api.assets.search');
+
+    Route::get('/api/custodians/search', function (Request $request) {
+        $q = $request->get('q', '');
+        return \App\Models\Custodian::query()
+            ->whereRaw("concat(nombres,' ',apellidos) like ?", ["%{$q}%"])
+            ->orWhere('cargo', 'like', "%{$q}%")
+            ->orWhere('unidad', 'like', "%{$q}%")
+            ->limit(30)
+            ->get()
+            ->map(fn($c) => [
+                'id' => $c->id,
+                'text' => "{$c->nombres} {$c->apellidos} — {$c->cargo}",
+            ]);
+    })->name('api.custodians.search');
+
+});
+    
+    
+    
     /*
 |--------------------------------------------------------------------------
 | Users (solo Administrador)

@@ -44,36 +44,22 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                         {{-- Activo --}}
-                        <div class="md:col-span-2">
-                            <label class="label-pro">Activo *</label>
-                            <select name="asset_id" class="select-pro-2 mt-1" required>
-                                <option value="">-- Seleccione --</option>
-                                @foreach($assets as $a)
-                                    <option value="{{ $a->id }}" @selected(old('asset_id') == $a->id)>
-                                        {{ $a->codigo_patrimonial }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('asset_id')
-                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <div class="mb-4">
+                        <label class="label-pro">Activo (buscar por código/serie)</label>
+                        <select id="asset_id" name="asset_id" class="input-pro">
+                            <option value="">-- Buscar activo --</option>
+                        </select>
+                        @error('asset_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    </div>
 
                         {{-- Custodio --}}
-                        <div>
-                            <label class="label-pro">Custodio *</label>
-                            <select name="custodian_id" class="select-pro-2 mt-1" required>
-                                <option value="">-- Seleccione --</option>
-                                @foreach($custodians as $c)
-                                    <option value="{{ $c->id }}" @selected(old('custodian_id') == $c->id)>
-                                        {{ $c->nombre_completo }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('custodian_id')
-                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <div class="mb-4">
+                        <label class="label-pro">Custodio (buscar por nombre)</label>
+                        <select id="custodian_id" name="custodian_id" class="input-pro">
+                            <option value="">-- Buscar custodio --</option>
+                        </select>
+                        @error('custodian_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+                    </div>
 
                         {{-- Ubicación --}}
                         <div>
@@ -156,6 +142,41 @@
                     </div>
 
                 </form>
+                @push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  new TomSelect('#asset_id', {
+    valueField: 'id',
+    labelField: 'text',
+    searchField: ['text'],
+    maxOptions: 30,
+    load: function(query, callback) {
+      if (!query || query.length < 2) return callback();
+      fetch(`{{ route('api.assets.search') }}?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(json => callback(json))
+        .catch(() => callback());
+    }
+  });
+
+  new TomSelect('#custodian_id', {
+    valueField: 'id',
+    labelField: 'text',
+    searchField: ['text'],
+    maxOptions: 30,
+    load: function(query, callback) {
+      if (!query || query.length < 2) return callback();
+      fetch(`{{ route('api.custodians.search') }}?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(json => callback(json))
+        .catch(() => callback());
+    }
+  });
+
+});
+</script>
+@endpush
             </div>
 
         </div>

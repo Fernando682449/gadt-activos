@@ -16,6 +16,12 @@
                         Editar
                     </a>
                 @endcan
+
+                 @can('assets.view')
+        <a href="{{ route('assets.alta.pdf', $asset) }}" class="btn-brand">
+            Descargar Acta (PDF)
+        </a>
+        @endcan
             </div>
         </div>
     </x-slot>
@@ -108,14 +114,11 @@
                                     <td class="text-gray-700">{{ $m->observaciones ?? '—' }}</td>
 
                                     <td class="text-right whitespace-nowrap">
-                                        @if(!empty($m->acta_pdf_path))
-                                            <a href="{{ route('assignments.acta', $m) }}" class="link-view">
-                                                Descargar PDF
-                                            </a>
-                                        @else
-                                            <span class="text-gray-400">—</span>
-                                        @endif
-                                    </td>
+    <a href="{{ route('assignments.acta.pdf', $m) }}" class="btn-ghost">
+        Descargar Acta PDF
+    </a>
+</td>
+                                    
                                 </tr>
                             @empty
                                 <tr>

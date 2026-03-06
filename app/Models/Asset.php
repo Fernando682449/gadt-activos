@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Assignment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
 
 class Asset extends Model
 {
@@ -20,6 +23,7 @@ class Asset extends Model
         'category_id',
         'brand_id',
         'purchase_order_number',
+        'custodian_id',
     ];
 
     public function category()
@@ -59,6 +63,27 @@ public function maintenances()
 public function histories()
 {
     return $this->hasMany(\App\Models\AssetHistory::class);
+}
+
+public function custodian()
+{
+    return $this->belongsTo(\App\Models\Custodian::class, 'custodian_id');
+}
+
+
+public function lastAssignment()
+{
+    return $this->hasOne(Assignment::class, 'asset_id')
+        ->whereIn('tipo_movimiento', ['ASIGNACION', 'REASIGNACION'])
+        ->orderByDesc('fecha_asignacion');
+}
+
+public function lastAssignmentEntrega()
+{
+    // última entrega: ASIGNACION o REASIGNACION
+    return $this->hasOne(Assignment::class, 'asset_id')
+        ->whereIn('tipo_movimiento', ['ASIGNACION', 'REASIGNACION'])
+        ->orderByDesc('fecha_asignacion');
 }
 
 }
