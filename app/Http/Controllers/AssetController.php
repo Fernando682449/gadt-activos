@@ -12,6 +12,8 @@ use App\Models\Status;
 use App\Models\AuditLog;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class AssetController extends Controller
 {
@@ -137,6 +139,18 @@ class AssetController extends Controller
             ->route('assets.index')
             ->with('success', 'Activo actualizado correctamente.');
     }
+
+    public function altaPdf(\App\Models\Asset $asset)
+{
+    $asset->load(['type','status','location','brand']);
+
+    $pdf = Pdf::loadView('pdf.activo-alta', [
+        'asset' => $asset,
+        'usuario' => auth()->user(),
+    ])->setPaper('A4');
+
+    return $pdf->download('ACTA_ALTA_'.$asset->codigo_patrimonial.'.pdf');
+}
 
     public function destroy(Asset $asset)
     {
