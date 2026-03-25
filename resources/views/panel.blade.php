@@ -110,7 +110,7 @@
                     <div class="stat-pro p-5 border-t-4 border-slate-600">
                         <div class="flex items-start justify-between">
                             <div>
-                                <div class="text-sm text-gray-500">Bitácora</div>
+                                <div class="text-sm text-gray-500">Historial de acciones</div>
                                 <div class="mt-2 text-3xl font-extrabold text-gray-900">
                                     {{ $countAuditLogs ?? '—' }}
                                 </div>
@@ -198,8 +198,8 @@
                     <a href="{{ route('audit-logs.index') }}" class="module-pro p-6 block">
                         <div class="flex items-start justify-between">
                             <div>
-                                <p class="text-lg font-extrabold text-gray-900">Bitácora</p>
-                                <p class="text-sm text-gray-600">Registro de actividades (auditoría)</p>
+                                <p class="text-lg font-extrabold text-gray-900">Historial de acciones</p>
+                                <p class="text-sm text-gray-600">Registro de actividades del sistema</p>
                             </div>
                             <div class="chip-circle bg-slate-100 text-slate-700">
                                 {{ $countAuditLogs ?? '—' }}

@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <span class="status-pill bg-gray-100 text-gray-800">Auditoría</span>
+                        <span class="status-pill bg-gray-100 text-gray-800">Historial de Acciones</span>
                         <span class="status-pill bg-brand-100 text-brand-800">Trazabilidad</span>
                     </div>
                 </div>

@@ -87,7 +87,7 @@
                         Mantenimientos
                     </a>
 
-                    {{-- Bitácora (si tienes ruta) --}}
+                    {{-- Historial de acciones (si tienes ruta) --}}
                     @if (Route::has('audit-logs.index'))
                         <a href="{{ route('audit-logs.index') }}"
                            class="nav-link {{ request()->routeIs('audit-logs.*') ? 'nav-link-active' : '' }}">
@@ -155,7 +155,7 @@
                 <a href="{{ route('maintenances.create') }}" class="mobile-link {{ request()->routeIs('maintenances.*') ? 'mobile-link-active' : '' }}">Mantenimientos</a>
 
                 @if (Route::has('audit-logs.index'))
-                    <a href="{{ route('audit-logs.index') }}" class="mobile-link {{ request()->routeIs('audit-logs.*') ? 'mobile-link-active' : '' }}">Bitácora</a>
+                    <a href="{{ route('audit-logs.index') }}" class="mobile-link {{ request()->routeIs('audit-logs.*') ? 'mobile-link-active' : '' }}">Historial de Acciones</a>
                 @endif
 
                 @if (Route::has('brands.index'))
