@@ -73,26 +73,7 @@
             <button type="submit" class="btn-primary w-full py-3 text-base">
                 Ingresar
             </button>
-            {{-- Botón Crear Usuario --}}
-<div class="mt-3">
-    <a href="{{ route('register') }}"
-       class="w-full inline-flex items-center justify-center gap-2 
-              py-3 px-4 rounded-xl 
-              border border-red-600 text-red-700 
-              font-semibold text-sm
-              bg-white hover:bg-red-50 
-              transition-all duration-200 shadow-soft">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M18 9v6M15 12h6M9 12H3m6-6v12"/>
-        </svg>
-        Crear nuevo usuario
-    </a>
-</div>
-
-            <p class="text-center text-xs text-gray-500 mt-3">
-                Si tienes problemas de acceso, contacta al administrador .
-            </p>
+            
         </form>
     </div>
 </x-guest-layout>
