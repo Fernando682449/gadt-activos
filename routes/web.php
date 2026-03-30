@@ -24,7 +24,7 @@ use App\Models\Assignment;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes 
 |--------------------------------------------------------------------------
 */
 
@@ -34,13 +34,13 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated routes
+| Authenticated routes 
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
     /*
 |--------------------------------------------------------------------------
-| Profile
+| Profile 
 |--------------------------------------------------------------------------
 */
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -63,7 +63,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Assets
+    | Assets )(evaluar)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:assets.view')
@@ -100,8 +100,8 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     Route::get('/custodia/{custodian}', [CustodyController::class, 'show'])->name('custody.show');
 });
     /*
-    |--------------------------------------------------------------------------
-    | Custodians
+    |--------------------- -----------------------------------------------------
+    | Custodians (custodios)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:custodians.view')
@@ -137,7 +137,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Assignments
+    | Assignments (Asignaciones)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:assignments.create')
@@ -161,7 +161,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Maintenances
+    | Maintenances (mantenimientos)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:maintenances.create')
@@ -174,7 +174,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Audit Logs
+    | Audit Logs (Registro de auditoría)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:auditlogs.view')
@@ -183,7 +183,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Reports (PDF)
+    | Reports (PDF) 
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:reports.export')
@@ -200,7 +200,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
     /*
     |--------------------------------------------------------------------------
-    | Brands
+    | Brands (marcas)
     |--------------------------------------------------------------------------
     */
     Route::middleware('permission:brands.view')
