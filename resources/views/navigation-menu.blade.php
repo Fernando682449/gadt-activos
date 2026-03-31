@@ -137,6 +137,10 @@
                                 Perfil
                             </x-dropdown-link>
 
+                            <x-dropdown-link href="{{ route('register') }}" class="hover:bg-indigo-50 hover:text-indigo-700 transition">
+                                Nuevo Usuario
+                            </x-dropdown-link>
+
                             <div class="border-t border-gray-200"></div>
 
                             <form method="POST" action="{{ route('logout') }}">
