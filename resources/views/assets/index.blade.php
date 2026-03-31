@@ -117,6 +117,7 @@
                             <th>Estado</th>
                             <th>Ubicación</th>
                             <th>Marca</th>
+                            <th>Custodio</th>
                             <th class="text-right">Acciones</th>
                         </tr>
                         </thead>
@@ -145,6 +146,7 @@
 
                                 <td>{{ $asset->location?->name ?? '—' }}</td>
                                 <td>{{ $asset->brand?->name ?? '—' }}</td>
+                                <td>{{ $asset->custodian?->nombres." ".$asset->custodian?->apellidos ?? '—' }}</td>
 
                                 <td class="text-right table-actions">
                                     <a class="link-view" href="{{ route('assets.show', $asset) }}">Ver</a>

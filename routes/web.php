@@ -38,6 +38,9 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
+  //  Route::get('/register', function () {
+  //  return redirect()->route('auth.register');
+//});
     /*
 |--------------------------------------------------------------------------
 | Profile 
@@ -247,13 +250,14 @@ Route::get('/assignments/{assignment}/devolucion-pdf', [AssignmentController::cl
     Route::get('/api/assets/search', function (Request $request) {
         $q = $request->get('q', '');
         return \App\Models\Asset::query()
+           // ->where('custodian_id', '!=', null)
             ->where('codigo_patrimonial', 'like', "%{$q}%")
             ->orWhere('numero_serie', 'like', "%{$q}%")
             ->limit(30)
             ->get()
             ->map(fn($a) => [
                 'id' => $a->id,
-                'text' => "{$a->codigo_patrimonial} — {$a->numero_serie}",
+                'text' => "{$a->codigo_patrimonial} — {$a->type?->name} — {$a->brand?->name} — {$a->status?->name}",
             ]);
     })->name('api.assets.search');
 

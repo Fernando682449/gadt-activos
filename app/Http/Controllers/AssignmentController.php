@@ -108,9 +108,11 @@ class AssignmentController extends Controller
     });
 
     // 5) Auditoría (afuera de la transacción)
+    $activo = Asset::find($data['asset_id']);
+    $custodio = Custodian::find($data['custodian_id']);
     AuditLog::create([
         'user_id' => Auth::id(),
-        'accion'  => 'Asignación/Reasignación de activo ID ' . $data['asset_id'] . ' a custodio ID ' . $data['custodian_id'],
+        'accion'  => 'Asignación/Reasignación de activo (' . $activo->codigo_patrimonial . ') a custodio (' . $custodio->nombres . ' ' . $custodio->apellidos . ')',
         'modulo'  => 'Asignaciones',
         'fecha'   => now(),
     ]);
