@@ -42,6 +42,7 @@ class CustodyController extends Controller
                 'status',
                 'location',
                 'brand',
+                'custodian',
                 'lastAssignment',
                 'lastAssignmentEntrega'
             ])

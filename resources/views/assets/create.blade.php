@@ -27,7 +27,6 @@
             @endif
 
             <div class="card-hover overflow-hidden">
-                {{-- Header del card --}}
                 <div class="p-6 border-b border-gray-200 flex items-start justify-between">
                     <div>
                         <div class="text-sm text-gray-500">Formulario</div>
@@ -135,6 +134,22 @@
                             </div>
                         </div>
 
+                        {{-- Responsable / Custodio --}}
+                        <div>
+                            <label class="label-pro">Responsable / Custodio</label>
+                            <select name="custodian_id" class="select-pro-2" required>
+                                <option value="">-- Seleccione al responsable --</option>
+                                @foreach($custodians as $c)
+                                    <option value="{{ $c->id }}" @selected(old('custodian_id') == $c->id)>
+                                        {{ $c->nombre_completo ?? trim(($c->nombres ?? '') . ' ' . ($c->apellidos ?? '')) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('custodian_id')
+                                <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Fecha / Costo --}}
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
@@ -173,7 +188,7 @@
                                 name="observaciones"
                                 class="input-pro-2"
                                 rows="4"
-                                placeholder="Detalle adicional del activo (opcional)."
+                                placeholder="Detalle adicional del activo."
                             >{{ old('observaciones') }}</textarea>
                             @error('observaciones')
                                 <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
@@ -194,7 +209,7 @@
             </div>
 
             <p class="mt-4 text-xs text-gray-500 text-center">
-                Tip: Usa un código patrimonial único para facilitar búsquedas y auditoría.
+                Tip: Usa un código patrimonial único y asigna siempre un responsable para facilitar el control y la auditoría.
             </p>
 
         </div>

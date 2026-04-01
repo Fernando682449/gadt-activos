@@ -13,6 +13,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CustodyController;
+use App\Http\Controllers\UserController;
+
 
 
 use App\Models\Asset;
@@ -69,6 +71,14 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     | Assets )(evaluar)
     |--------------------------------------------------------------------------
     */
+    Route::middleware(['auth', 'role:Administrador'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+});
+
+
+
     Route::middleware('permission:assets.view')
         ->get('/assets', [AssetController::class, 'index'])
         ->name('assets.index');

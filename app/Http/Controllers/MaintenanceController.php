@@ -19,10 +19,13 @@ class MaintenanceController extends Controller
     }
 
     public function create()
-    {
-        $assets = Asset::orderBy('codigo_patrimonial')->get();
-        return view('maintenances.create', compact('assets'));
-    }
+{
+    $assets = \App\Models\Asset::with(['type', 'brand', 'status', 'custodian', 'location'])
+        ->orderBy('codigo_patrimonial')
+        ->get();
+
+    return view('maintenances.create', compact('assets'));
+}
 
     public function store(StoreMaintenanceRequest $request)
     {

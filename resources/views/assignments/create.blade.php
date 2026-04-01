@@ -13,7 +13,6 @@
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- Errores generales --}}
             @if ($errors->any())
                 <div class="alert-danger mb-6">
                     <div class="font-semibold mb-2">Corrige lo siguiente:</div>
@@ -44,22 +43,48 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                         {{-- Activo --}}
-                        <div class="mb-4">
-                        <label class="label-pro">Activo (buscar por código/serie)</label>
-                        <select id="asset_id" name="asset_id" class="input-pro">
-                            <option value="">-- Buscar activo --</option>
-                        </select>
-                        @error('asset_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                        <div>
+                            <label class="label-pro">Activo (buscar por código/serie) *</label>
+                            <select id="asset_id" name="asset_id" class="select-pro-2 mt-1" required>
+                                <option value="">-- Seleccione un activo --</option>
+                                @foreach($assets as $a)
+                                    <option value="{{ $a->id }}" @selected(old('asset_id') == $a->id)>
+                                        {{ $a->codigo_patrimonial }}
+                                        — {{ $a->type?->name ?? 'Sin tipo' }}
+                                        — {{ $a->brand?->name ?? 'Sin marca' }}
+                                        — {{ $a->status?->name ?? 'Sin estado' }}
+                                        @if($a->numero_serie)
+                                            — Serie: {{ $a->numero_serie }}
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('asset_id')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         {{-- Custodio --}}
-                        <div class="mb-4">
-                        <label class="label-pro">Custodio (buscar por nombre)</label>
-                        <select id="custodian_id" name="custodian_id" class="input-pro">
-                            <option value="">-- Buscar custodio --</option>
-                        </select>
-                        @error('custodian_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
-                    </div>
+                        <div>
+                            <label class="label-pro">Custodio (buscar por nombre) *</label>
+                            <select id="custodian_id" name="custodian_id" class="select-pro-2 mt-1" required>
+                                <option value="">-- Seleccione un custodio --</option>
+                                @foreach($custodians as $c)
+                                    <option value="{{ $c->id }}" @selected(old('custodian_id') == $c->id)>
+                                        {{ $c->nombre_completo ?? trim(($c->nombres ?? '') . ' ' . ($c->apellidos ?? '')) }}
+                                        @if($c->cargo)
+                                            — {{ $c->cargo }}
+                                        @endif
+                                        @if($c->unidad)
+                                            — {{ $c->unidad }}
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('custodian_id')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         {{-- Ubicación --}}
                         <div>
@@ -125,7 +150,6 @@
 
                     </div>
 
-                    {{-- Acciones --}}
                     <div class="pt-5 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div class="text-xs text-gray-500">
                             Al guardar, el movimiento quedará registrado y podrá reflejarse en la bitácora.
@@ -140,45 +164,29 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
-                @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-  new TomSelect('#asset_id', {
-    valueField: 'id',
-    labelField: 'text',
-    searchField: ['text'],
-    maxOptions: 30,
-    load: function(query, callback) {
-      if (!query || query.length < 2) return callback();
-      fetch(`{{ route('api.assets.search') }}?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(json => callback(json))
-        .catch(() => callback());
-    }
-  });
-
-  new TomSelect('#custodian_id', {
-    valueField: 'id',
-    labelField: 'text',
-    searchField: ['text'],
-    maxOptions: 30,
-    load: function(query, callback) {
-      if (!query || query.length < 2) return callback();
-      fetch(`{{ route('api.custodians.search') }}?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(json => callback(json))
-        .catch(() => callback());
-    }
-  });
-
-});
-</script>
-@endpush
             </div>
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.TomSelect) {
+                new TomSelect('#asset_id', {
+                    create: false,
+                    sortField: { field: 'text', direction: 'asc' },
+                    maxOptions: 200,
+                    placeholder: 'Buscar activo por código, tipo, marca o serie'
+                });
+
+                new TomSelect('#custodian_id', {
+                    create: false,
+                    sortField: { field: 'text', direction: 'asc' },
+                    maxOptions: 200,
+                    placeholder: 'Buscar custodio por nombre, cargo o unidad'
+                });
+            }
+        });
+    </script>
 </x-app-layout>

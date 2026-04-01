@@ -19,7 +19,6 @@
                     </a>
                 @endcan
             </div>
-            
         </div>
     </x-slot>
 
@@ -32,6 +31,12 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="alert-danger mb-5">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             {{-- FILTROS --}}
             <div class="filters-card mb-6">
                 <form method="GET" action="{{ route('assets.index') }}" class="filters-grid">
@@ -40,7 +45,7 @@
                         <label class="label-pro">Buscar activo</label>
                         <input name="q" value="{{ request('q') }}"
                                class="input-pro-2"
-                               placeholder="Ej: DTI-2026-001 o Dell">
+                               placeholder="Ej: DTI-2026-001, laptop, Dell o nombre del custodio">
                     </div>
 
                     <div>
@@ -79,7 +84,6 @@
                         </select>
                     </div>
 
-                    {{-- Si ya estás usando marcas en el filtro --}}
                     @isset($brands)
                         <div>
                             <label class="label-pro">Marca</label>
@@ -111,74 +115,86 @@
                 <div class="overflow-x-auto">
                     <table class="table-pro-2">
                         <thead class="table-head">
-                        <tr>
-                            <th>Código</th>
-                            <th>Tipo</th>
-                            <th>Estado</th>
-                            <th>Ubicación</th>
-                            <th>Marca</th>
-                            <th>Custodio</th>
-                            <th class="text-right">Acciones</th>
-                        </tr>
+                            <tr>
+                                <th>Código</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Ubicación</th>
+                                <th>Marca</th>
+                                <th>Responsable / Custodio</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
                         </thead>
+
                         <tbody>
-                        @forelse($assets as $asset)
-                            <tr>
-                                <td class="font-semibold text-gray-900">
-    <div>{{ $asset->codigo_patrimonial }}</div>
-    <div class="text-xs text-gray-500">
-        {{ $asset->observaciones ?: ($asset->type?->name ?? 'Sin descripción') }}
-    </div>
-</td>
-                                <td>{{ $asset->type?->name ?? '—' }}</td>
+                            @forelse($assets as $asset)
+                                <tr>
+                                    <td class="font-semibold text-gray-900">
+                                        <div>{{ $asset->codigo_patrimonial }}</div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ $asset->observaciones ?: ($asset->type?->name ?? 'Sin descripción') }}
+                                        </div>
+                                    </td>
 
-                                {{-- Estado en pill --}}
-                                <td>
-                                    @php
-                                        $st = strtolower($asset->status?->name ?? '');
-                                    @endphp
+                                    <td>{{ $asset->type?->name ?? '—' }}</td>
 
-                                    @if(str_contains($st, 'activo'))
-                                        <span class="status-ok">{{ $asset->status?->name }}</span>
-                                    @elseif(str_contains($st, 'repar'))
-                                        <span class="status-warn">{{ $asset->status?->name }}</span>
-                                    @elseif(str_contains($st, 'baja'))
-                                        <span class="status-bad">{{ $asset->status?->name }}</span>
-                                    @else
-                                        <span class="status-neutral">{{ $asset->status?->name ?? '—' }}</span>
-                                    @endif
-                                </td>
+                                    <td>
+                                        @php
+                                            $st = strtolower($asset->status?->name ?? '');
+                                        @endphp
 
-                                <td>{{ $asset->location?->name ?? '—' }}</td>
-                                <td>{{ $asset->brand?->name ?? '—' }}</td>
-                                <td>{{ $asset->custodian ? trim(($asset->custodian->nombres ?? '') . ' ' . ($asset->custodian->apellidos ?? '')) : '—' }}</td>
+                                        @if(str_contains($st, 'activo'))
+                                            <span class="status-ok">{{ $asset->status?->name }}</span>
+                                        @elseif(str_contains($st, 'repar'))
+                                            <span class="status-warn">{{ $asset->status?->name }}</span>
+                                        @elseif(str_contains($st, 'baja'))
+                                            <span class="status-bad">{{ $asset->status?->name }}</span>
+                                        @else
+                                            <span class="status-neutral">{{ $asset->status?->name ?? '—' }}</span>
+                                        @endif
+                                    </td>
 
-                                <td class="text-right table-actions">
-                                    <a class="link-view" href="{{ route('assets.show', $asset) }}">Ver</a>
-                                    <span class="text-gray-300 px-1">|</span>
+                                    <td>{{ $asset->location?->name ?? '—' }}</td>
+                                    <td>{{ $asset->brand?->name ?? '—' }}</td>
 
-                                    @can('assets.edit')
-                                        <a class="link-edit" href="{{ route('assets.edit', $asset) }}">Editar</a>
+                                    <td>
+                                        @if($asset->custodian)
+                                            {{ $asset->custodian->nombre_completo ?? trim(($asset->custodian->nombres ?? '') . ' ' . ($asset->custodian->apellidos ?? '')) }}
+                                        @else
+                                            <span class="status-bad">Sin responsable asignado</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-right table-actions">
+                                        <a class="link-view" href="{{ route('assets.show', $asset) }}">Ver</a>
                                         <span class="text-gray-300 px-1">|</span>
-                                    @endcan
 
-                                    @can('assets.delete')
-                                        <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="inline"
-                                              onsubmit="return confirm('¿Dar de baja este activo?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="link-delete">Baja</button>
-                                        </form>
-                                    @endcan
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-4 py-10 text-center text-gray-500">
-                                    No hay activos con esos filtros.
-                                </td>
-                            </tr>
-                        @endforelse
+                                        @can('assets.edit')
+                                            <a class="link-edit" href="{{ route('assets.edit', $asset) }}">Editar</a>
+                                            <span class="text-gray-300 px-1">|</span>
+                                        @endcan
+
+                                        @can('assets.delete')
+                                            @if(strtolower($asset->status?->name ?? '') !== 'baja')
+                                                <form action="{{ route('assets.destroy', $asset) }}" method="POST" class="inline"
+                                                      onsubmit="return confirm('¿Dar de baja este activo?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="link-delete">Baja</button>
+                                                </form>
+                                            @else
+                                                <span class="text-gray-400">Ya dado de baja</span>
+                                            @endif
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="px-4 py-10 text-center text-gray-500">
+                                        No hay activos con esos filtros.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

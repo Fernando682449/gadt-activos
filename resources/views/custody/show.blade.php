@@ -17,7 +17,6 @@
                     ← Volver
                 </a>
 
-                {{-- Opcional: si quieres abrir su ficha normal --}}
                 <a href="{{ route('custodians.show', $custodian) }}" class="btn-outline">
                     👤 Ver custodio
                 </a>
@@ -47,7 +46,9 @@
                 <div class="p-5 border-b border-gray-200 flex items-center justify-between">
                     <div>
                         <div class="text-sm text-gray-600">Listado de activos asignados</div>
-                        <div class="text-xs text-gray-500">Para devolver un activo, usa el botón “Devolver”.</div>
+                        <div class="text-xs text-gray-500">
+                            Antes de devolver un activo, verifique claramente a quién fue entregado y la fecha de asignación.
+                        </div>
                     </div>
 
                     <span class="status-ok">📦 Activos en Custodia</span>
@@ -62,7 +63,8 @@
                                 <th>Marca</th>
                                 <th>Ubicación</th>
                                 <th>Estado</th>
-                                <th>Asignado el</th>
+                                <th>Entregado a / Responsable actual</th>
+                                <th>Fecha de entrega</th>
                                 <th class="text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -71,27 +73,47 @@
                             @forelse($assets as $a)
                                 <tr>
                                     <td class="font-medium text-gray-900">
-                                        {{ $a->codigo_patrimonial }}
+                                        <div>{{ $a->codigo_patrimonial }}</div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ $a->observaciones ?: ($a->type?->name ?? 'Sin descripción') }}
+                                        </div>
                                     </td>
 
                                     <td>{{ $a->type?->name ?? '—' }}</td>
                                     <td>{{ $a->brand?->name ?? '—' }}</td>
                                     <td>{{ $a->location?->name ?? '—' }}</td>
-                                    <td>{{ $a->status?->name ?? '—' }}</td>
 
-                                    {{-- ✅ Fecha de entrega (última ASIGNACION/REASIGNACION) --}}
+                                    <td>
+                                        @php
+                                            $st = strtolower($a->status?->name ?? '');
+                                        @endphp
+
+                                        @if(str_contains($st, 'activo'))
+                                            <span class="status-ok">{{ $a->status?->name }}</span>
+                                        @elseif(str_contains($st, 'repar'))
+                                            <span class="status-warn">{{ $a->status?->name }}</span>
+                                        @elseif(str_contains($st, 'baja'))
+                                            <span class="status-bad">{{ $a->status?->name }}</span>
+                                        @else
+                                            <span class="status-neutral">{{ $a->status?->name ?? '—' }}</span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        {{ $a->custodian?->nombre_completo ?? trim(($a->custodian->nombres ?? '') . ' ' . ($a->custodian->apellidos ?? '')) ?: '—' }}
+                                    </td>
+
                                     <td class="whitespace-nowrap">
-                                        {{ optional($a->lastAssignmentEntrega()->first())->fecha_asignacion ?? '—' }}
+                                        {{ $a->lastAssignmentEntrega?->fecha_asignacion ?? $a->lastAssignment?->fecha_asignacion ?? '—' }}
                                     </td>
 
                                     <td class="text-right whitespace-nowrap">
-                                        <div class="inline-flex items-center gap-2">
+                                        <div class="inline-flex items-center gap-2 flex-wrap">
 
                                             <a href="{{ route('assets.show', $a) }}" class="btn btn-outline btn-sm">
                                                 👁 Ver
                                             </a>
 
-                                            {{-- ✅ Acta PDF del último movimiento (si existe) --}}
                                             @if(optional($a->lastAssignment)->acta_pdf_path)
                                                 <a href="{{ route('assignments.acta', $a->lastAssignment) }}"
                                                    class="btn btn-outline btn-sm">
@@ -99,18 +121,21 @@
                                                 </a>
                                             @endif
 
-                                            {{-- DEVOLVER (REGISTRA DEVOLUCIÓN + PDF) --}}
                                             @can('assignments.create')
-                                                <form method="POST" action="{{ route('custody.devolver', [$custodian, $a]) }}" class="inline-flex gap-2">
+                                                <form method="POST"
+                                                      action="{{ route('custody.devolver', [$custodian, $a]) }}"
+                                                      class="inline-flex gap-2 items-center">
                                                     @csrf
 
                                                     <select name="location_id" class="select-pro-2" required>
+                                                        <option value="">Ubicación devolución</option>
                                                         @foreach(\App\Models\Location::orderBy('name')->get() as $loc)
                                                             <option value="{{ $loc->id }}">{{ $loc->name }}</option>
                                                         @endforeach
                                                     </select>
 
-                                                    <button class="btn btn-danger btn-sm" onclick="return confirm('¿Confirmar devolución de este activo?')">
+                                                    <button class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('¿Confirmar devolución de este activo?')">
                                                         ↩ Devolver
                                                     </button>
                                                 </form>
@@ -121,7 +146,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="py-10 text-center text-gray-500">
+                                    <td colspan="8" class="py-10 text-center text-gray-500">
                                         Este funcionario no tiene activos asignados actualmente.
                                     </td>
                                 </tr>

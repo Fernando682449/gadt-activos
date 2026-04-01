@@ -1,32 +1,63 @@
 <x-app-layout>
-<x-slot name="header">
-    <h2 class="text-xl font-bold">Usuarios</h2>
-</x-slot>
+    <x-slot name="header">
+        <div class="page-header">
+            <div>
+                <h2 class="page-title">Usuarios</h2>
+                <p class="page-subtitle">Listado general de usuarios registrados en el sistema.</p>
+            </div>
 
-<div class="py-8">
-<div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+            <div class="flex gap-2">
+                <a href="{{ route('users.create') }}" class="btn-brand">
+                    + Nuevo Usuario
+                </a>
+            </div>
+        </div>
+    </x-slot>
 
-<a href="{{ route('users.create') }}" class="bg-green-600 text-white px-3 py-2 rounded">
-+ Nuevo Usuario
-</a>
+    <div class="py-8 page-bg">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
 
-<table class="w-full mt-4 border">
-<tr class="bg-gray-100">
-<th>Nombre</th>
-<th>Email</th>
-<th>Rol</th>
-</tr>
+            @if(session('success'))
+                <div class="alert-success mb-6">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-@foreach($users as $user)
-<tr>
-<td>{{ $user->name }}</td>
-<td>{{ $user->email }}</td>
-<td>{{ $user->roles->first()?->name }}</td>
-</tr>
-@endforeach
+            <div class="table-card">
+                <div class="overflow-x-auto">
+                    <table class="table-pro-2">
+                        <thead class="table-head">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Fecha de creación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($users as $user)
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->roles->pluck('name')->implode(', ') ?: 'Sin rol' }}</td>
+                                    <td>{{ optional($user->created_at)->format('Y-m-d H:i') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-4 py-10 text-center text-gray-500">
+                                        No hay usuarios registrados.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-</table>
+                <div class="px-4 py-4">
+                    {{ $users->links() }}
+                </div>
+            </div>
 
-</div>
-</div>
+        </div>
+    </div>
 </x-app-layout>

@@ -33,6 +33,7 @@ class AssignmentController extends Controller
         return view('assignments.create', compact('assets', 'custodians', 'locations'));
     }
 
+    
     public function actaPdf(\App\Models\Assignment $assignment)
 {
     $assignment->load(['asset.brand','asset.type','custodian','location','user']);

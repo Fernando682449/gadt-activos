@@ -74,7 +74,6 @@
                         </x-nav-link>
                     @endcan
 
-                    {{-- ✅ NUEVO: CATÁLOGOS --}}
                     @can('assets.view')
                         <div class="flex items-center">
                             <x-dropdown align="left" width="56">
@@ -137,9 +136,11 @@
                                 Perfil
                             </x-dropdown-link>
 
-                            <x-dropdown-link href="{{ route('register') }}" class="hover:bg-indigo-50 hover:text-indigo-700 transition">
-                                Nuevo Usuario
-                            </x-dropdown-link>
+                            @role('Administrador')
+                                <x-dropdown-link href="{{ route('users.create') }}" class="hover:bg-indigo-50 hover:text-indigo-700 transition">
+                                    Nuevo Usuario
+                                </x-dropdown-link>
+                            @endrole
 
                             <div class="border-t border-gray-200"></div>
 
@@ -240,6 +241,12 @@
                 <x-responsive-nav-link href="{{ route('profile.show') }}">
                     Perfil
                 </x-responsive-nav-link>
+
+                @role('Administrador')
+                    <x-responsive-nav-link href="{{ route('users.create') }}">
+                        Nuevo Usuario
+                    </x-responsive-nav-link>
+                @endrole
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
