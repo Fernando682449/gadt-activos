@@ -17,7 +17,6 @@
     <div class="py-10 page-bg">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- Errores --}}
             @if ($errors->any())
                 <div class="alert-danger mb-6">
                     <div class="font-semibold mb-2">Corrige lo siguiente:</div>
@@ -114,7 +113,7 @@
                             @enderror
                         </div>
 
-                        {{-- Ubicación (si la usas) --}}
+                        {{-- Ubicación --}}
                         @isset($locations)
                         <div>
                             <label class="label-pro">Ubicación *</label>
@@ -132,7 +131,7 @@
                         </div>
                         @endisset
 
-                        {{-- Marca (si la usas) --}}
+                        {{-- Marca --}}
                         @isset($brands)
                         <div>
                             <label class="label-pro">Marca</label>
@@ -149,6 +148,22 @@
                             @enderror
                         </div>
                         @endisset
+
+                        {{-- Responsable / Custodio --}}
+                        <div class="md:col-span-2">
+                            <label class="label-pro">Responsable / Custodio *</label>
+                            <select name="custodian_id" class="select-pro-2 mt-1" required>
+                                <option value="">-- Seleccione al responsable --</option>
+                                @foreach($custodians as $c)
+                                    <option value="{{ $c->id }}" @selected(old('custodian_id', $asset->custodian_id) == $c->id)>
+                                        {{ $c->nombre_completo ?? trim(($c->nombres ?? '') . ' ' . ($c->apellidos ?? '')) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('custodian_id')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         {{-- Observaciones --}}
                         <div class="md:col-span-2">

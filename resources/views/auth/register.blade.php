@@ -1,90 +1,139 @@
-<x-guest-layout>
-    <div class="login-card">
-        <div class="text-center">
-            {{-- Logo arriba del título --}}
-            <div class="mx-auto mb-4 h-14 w-14 rounded-2xl bg-white shadow-soft flex items-center justify-center overflow-hidden border">
-                <img src="{{ asset('img/2.jpg') }}" alt="Logo" class="h-10 w-10 object-contain">
-            </div>
-
-            <div class="text-xs font-semibold tracking-widest text-gray-700">
-                GOBIERNO AUTÓNOMO
-            </div>
-            <div class="text-xs font-semibold tracking-widest text-gray-700">
-                DEPARTAMENTAL DE TARIJA
-            </div>
-
-            <h2 class="login-title mt-4">Crear cuenta</h2>
-            <p class="login-subtitle">Registra un nuevo usuario para acceder al sistema</p>
-        </div>
-
-        <x-validation-errors class="mb-4" />
-
-        <form method="POST" action="{{ route('register') }}" class="space-y-5">
-            @csrf
-
+<x-app-layout>
+    <x-slot name="header">
+        <div class="page-header">
             <div>
-                <label for="name" class="label-pro">Nombre completo</label>
-                <input id="name"
-                       name="name"
-                       type="text"
-                       value="{{ old('name') }}"
-                       required
-                       autofocus
-                       autocomplete="name"
-                       class="input-pro"
-                       placeholder="Ej: Juan Pérez">
+                <h2 class="page-title">Nuevo Usuario</h2>
+                <p class="page-subtitle">Registra un nuevo usuario y define el rol que tendrá dentro del sistema.</p>
             </div>
 
-            <div>
-                <label for="email" class="label-pro">Correo electrónico</label>
-                <input id="email"
-                       name="email"
-                       type="email"
-                       value="{{ old('email') }}"
-                       required
-                       autocomplete="username"
-                       class="input-pro"
-                       placeholder="ejemplo@correo.com">
-            </div>
+            <div class="flex gap-2">
+                <a href="{{ route('users.index') }}" class="btn-outline">
+                    👥 Ver usuarios
+                </a>
 
-            <div>
-                <label for="password" class="label-pro">Contraseña</label>
-                <input id="password"
-                       name="password"
-                       type="password"
-                       required
-                       autocomplete="new-password"
-                       class="input-pro"
-                       placeholder="••••••••">
-                <p class="mt-1 text-xs text-gray-500">
-                    Usa una contraseña segura (mínimo 8 caracteres).
-                </p>
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="label-pro">Confirmar contraseña</label>
-                <input id="password_confirmation"
-                       name="password_confirmation"
-                       type="password"
-                       required
-                       autocomplete="new-password"
-                       class="input-pro"
-                       placeholder="••••••••">
-            </div>
-
-            <button type="submit" class="btn-primary w-full py-3 text-base">
-                Registrar usuario
-            </button>
-
-            <div class="text-center">
-                <a href="{{ route('login') }}" class="text-sm font-semibold text-brand-700 hover:text-brand-800 smooth">
-                    ¿Ya tienes cuenta? Inicia sesión
+                <a href="{{ route('dashboard') }}" class="btn-ghost">
+                    ← Volver
                 </a>
             </div>
+        </div>
+    </x-slot>
 
-            <p class="text-center text-xs text-gray-500 mt-2">
-                Si tienes problemas de acceso, contacta al administrador.
-            </p>
-        </form>
+    <div class="py-8 page-bg">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+
+            @if ($errors->any())
+                <div class="alert-danger mb-6">
+                    <div class="font-semibold mb-2">Corrige lo siguiente:</div>
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert-success mb-6">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="card p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                    <div>
+                        <div class="section-title">Formulario de registro</div>
+                        <div class="section-subtitle">La creación de usuarios está controlada por el administrador.</div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span class="status-pill bg-brand-100 text-brand-800">Usuarios</span>
+                        <span class="status-pill bg-gray-100 text-gray-800">Registro</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('users.store') }}" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="name" class="label-pro">Nombre completo</label>
+                        <input id="name"
+                               name="name"
+                               type="text"
+                               value="{{ old('name') }}"
+                               required
+                               autofocus
+                               class="input-pro-2 mt-1"
+                               placeholder="Ej: Juan Pérez">
+                    </div>
+
+                    <div>
+                        <label for="email" class="label-pro">Correo electrónico</label>
+                        <input id="email"
+                               name="email"
+                               type="email"
+                               value="{{ old('email') }}"
+                               required
+                               class="input-pro-2 mt-1"
+                               placeholder="ejemplo@correo.com">
+                    </div>
+
+                    <div>
+                        <label for="role" class="label-pro">Rol del usuario</label>
+                        <select id="role" name="role" class="select-pro-2 mt-1" required>
+                            <option value="">-- Seleccione un rol --</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}" @selected(old('role') == $role->name)>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="password" class="label-pro">Contraseña</label>
+                        <input id="password"
+                               name="password"
+                               type="password"
+                               required
+                               class="input-pro-2 mt-1"
+                               placeholder="••••••••">
+                        <p class="mt-1 text-xs text-gray-500">
+                            Usa una contraseña segura de al menos 6 caracteres.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="password_confirmation" class="label-pro">Confirmar contraseña</label>
+                        <input id="password_confirmation"
+                               name="password_confirmation"
+                               type="password"
+                               required
+                               class="input-pro-2 mt-1"
+                               placeholder="••••••••">
+                    </div>
+
+                    <div class="pt-5 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div class="text-xs text-gray-500">
+                            El administrador define el acceso y el rol del nuevo usuario.
+                        </div>
+
+                        <div class="flex gap-2 justify-end">
+                            <a href="{{ route('users.index') }}" class="btn-outline">
+                                Ver usuarios
+                            </a>
+
+                            <a href="{{ route('dashboard') }}" class="btn-ghost">
+                                Cancelar
+                            </a>
+
+                            <button type="submit" class="btn-brand">
+                                Registrar usuario
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
-</x-guest-layout>
+</x-app-layout>

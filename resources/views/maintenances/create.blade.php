@@ -11,7 +11,6 @@
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- Errores generales --}}
             @if ($errors->any())
                 <div class="alert-danger mb-6">
                     <div class="font-semibold mb-2">Corrige lo siguiente:</div>
@@ -44,11 +43,19 @@
                         {{-- Activo --}}
                         <div class="md:col-span-2">
                             <label class="label-pro">Activo</label>
-                            <select name="asset_id" class="select-pro-2 mt-1" required>
-                                <option value="">-- Seleccione --</option>
+                            <select id="asset_id" name="asset_id" class="select-pro-2 mt-1" required>
+                                <option value="">-- Seleccione un activo --</option>
                                 @foreach($assets as $a)
                                     <option value="{{ $a->id }}" @selected(old('asset_id') == $a->id)>
                                         {{ $a->codigo_patrimonial }}
+                                        — {{ $a->type?->name ?? 'Sin tipo' }}
+                                        — {{ $a->brand?->name ?? 'Sin marca' }}
+                                        — {{ $a->status?->name ?? 'Sin estado' }}
+                                        — Resp: {{ $a->custodian?->nombre_completo ?? trim(($a->custodian->nombres ?? '') . ' ' . ($a->custodian->apellidos ?? '')) ?: 'Sin responsable' }}
+                                        — Ubicación: {{ $a->location?->name ?? 'Sin ubicación' }}
+                                        @if($a->numero_serie)
+                                            — Serie: {{ $a->numero_serie }}
+                                        @endif
                                     </option>
                                 @endforeach
                             </select>
@@ -148,7 +155,6 @@
                             @enderror
                         </div>
 
-                        {{-- (espacio visual) --}}
                         <div class="hidden md:block"></div>
 
                         {{-- Descripción de falla --}}
@@ -181,7 +187,6 @@
 
                     </div>
 
-                    {{-- Acciones --}}
                     <div class="pt-5 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div class="text-xs text-gray-500">
                             Tip: agrega costo y técnico para mejorar la auditoría del mantenimiento.
@@ -202,4 +207,17 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.TomSelect) {
+                new TomSelect('#asset_id', {
+                    create: false,
+                    sortField: { field: 'text', direction: 'asc' },
+                    maxOptions: 250,
+                    placeholder: 'Buscar por código, tipo, marca, responsable, ubicación o serie'
+                });
+            }
+        });
+    </script>
 </x-app-layout>
