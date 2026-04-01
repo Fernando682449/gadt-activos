@@ -37,10 +37,10 @@
                 <form method="GET" action="{{ route('assets.index') }}" class="filters-grid">
 
                     <div class="md:col-span-2">
-                        <label class="label-pro">Buscar (Código / Serie)</label>
+                        <label class="label-pro">Buscar activo</label>
                         <input name="q" value="{{ request('q') }}"
                                class="input-pro-2"
-                               placeholder="Ej: GADT-0001 o SN123">
+                               placeholder="Ej: DTI-2026-001 o Dell">
                     </div>
 
                     <div>
@@ -124,7 +124,12 @@
                         <tbody>
                         @forelse($assets as $asset)
                             <tr>
-                                <td class="font-semibold text-gray-900">{{ $asset->codigo_patrimonial }}</td>
+                                <td class="font-semibold text-gray-900">
+    <div>{{ $asset->codigo_patrimonial }}</div>
+    <div class="text-xs text-gray-500">
+        {{ $asset->observaciones ?: ($asset->type?->name ?? 'Sin descripción') }}
+    </div>
+</td>
                                 <td>{{ $asset->type?->name ?? '—' }}</td>
 
                                 {{-- Estado en pill --}}
@@ -146,7 +151,7 @@
 
                                 <td>{{ $asset->location?->name ?? '—' }}</td>
                                 <td>{{ $asset->brand?->name ?? '—' }}</td>
-                                <td>{{ $asset->custodian?->nombres." ".$asset->custodian?->apellidos ?? '—' }}</td>
+                                <td>{{ $asset->custodian ? trim(($asset->custodian->nombres ?? '') . ' ' . ($asset->custodian->apellidos ?? '')) : '—' }}</td>
 
                                 <td class="text-right table-actions">
                                     <a class="link-view" href="{{ route('assets.show', $asset) }}">Ver</a>
