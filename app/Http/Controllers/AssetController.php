@@ -17,54 +17,57 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class AssetController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index()
-    {
-        $query = Asset::with(['type', 'status', 'location', 'brand']);
+{
+    $query = Asset::with(['type', 'status', 'location', 'brand', 'custodian']);
 
-        // 🔍 búsqueda por código o serie
-        if (request('q')) {
-            $q = request('q');
-            $query->where(function ($sub) use ($q) {
-                $sub->where('codigo_patrimonial', 'like', "%{$q}%")
-                    ->orWhere('numero_serie', 'like', "%{$q}%");
-            });
-        }
+    // búsqueda mejorada
+    if (request('q')) {
+        $q = trim(request('q'));
 
-        // ✅ filtro por tipo (columna real: asset_type_id)
-        if (request('asset_type_id')) {
-            $query->where('asset_type_id', request('asset_type_id'));
-        }
-
-        // ✅ filtro por estado
-        if (request('status_id')) {
-            $query->where('status_id', request('status_id'));
-        }
-
-        // ✅ filtro por ubicación
-        if (request('location_id')) {
-            $query->where('location_id', request('location_id'));
-        }
-
-        // ✅ filtro por marca
-        if (request('brand_id')) {
-            $query->where('brand_id', request('brand_id'));
-        }
-
-        $assets = $query->latest()->paginate(10)->withQueryString();
-
-        // combos para filtros
-        $types = AssetType::orderBy('name')->get();
-        $statuses = Status::orderBy('name')->get();
-        $locations = Location::orderBy('name')->get();
-        $brands = Brand::orderBy('name')->get();
-
-        return view('assets.index', compact('assets', 'types', 'statuses', 'locations', 'brands'));
+        $query->where(function ($sub) use ($q) {
+            $sub->where('codigo_patrimonial', 'like', "%{$q}%")
+                ->orWhere('numero_serie', 'like', "%{$q}%")
+                ->orWhere('observaciones', 'like', "%{$q}%")
+                ->orWhereHas('type', function ($t) use ($q) {
+                    $t->where('name', 'like', "%{$q}%")
+                      ->orWhere('description', 'like', "%{$q}%");
+                })
+                ->orWhereHas('brand', function ($b) use ($q) {
+                    $b->where('name', 'like', "%{$q}%");
+                })
+                ->orWhereHas('custodian', function ($c) use ($q) {
+                    $c->where('nombres', 'like', "%{$q}%")
+                      ->orWhere('apellidos', 'like', "%{$q}%");
+                });
+        });
     }
+
+    if (request('asset_type_id')) {
+        $query->where('asset_type_id', request('asset_type_id'));
+    }
+
+    if (request('status_id')) {
+        $query->where('status_id', request('status_id'));
+    }
+
+    if (request('location_id')) {
+        $query->where('location_id', request('location_id'));
+    }
+
+    if (request('brand_id')) {
+        $query->where('brand_id', request('brand_id'));
+    }
+
+    $assets = $query->latest()->paginate(10)->withQueryString();
+
+    $types = AssetType::orderBy('name')->get();
+    $statuses = AssetStatus::orderBy('name')->get();
+    $locations = Location::orderBy('name')->get();
+    $brands = Brand::orderBy('name')->get();
+
+    return view('assets.index', compact('assets', 'types', 'statuses', 'locations', 'brands'));
+}
 
     public function create()
     {

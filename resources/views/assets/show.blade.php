@@ -17,11 +17,11 @@
                     </a>
                 @endcan
 
-                 @can('assets.view')
-        <a href="{{ route('assets.alta.pdf', $asset) }}" class="btn-brand">
-            Descargar Acta (PDF)
-        </a>
-        @endcan
+                @can('assets.view')
+                    <a href="{{ route('assets.alta.pdf', $asset) }}" class="btn-brand">
+                        Descargar Acta (PDF)
+                    </a>
+                @endcan
             </div>
         </div>
     </x-slot>
@@ -29,7 +29,7 @@
     <div class="py-8 page-bg">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            {{-- ✅ Detalle --}}
+            {{-- ✅ Detalle general del activo --}}
             <div class="card p-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
@@ -43,7 +43,7 @@
                     </div>
 
                     <div>
-                        <div class="text-gray-500">Tipo</div>
+                        <div class="text-gray-500">Tipo de activo</div>
                         <div class="font-semibold text-gray-900">{{ $asset->type?->name ?? '—' }}</div>
                     </div>
 
@@ -63,6 +63,13 @@
                     </div>
 
                     <div>
+                        <div class="text-gray-500">Responsable / Custodio</div>
+                        <div class="font-semibold text-gray-900">
+                            {{ $asset->custodian?->nombre_completo ?? trim(($asset->custodian->nombres ?? '') . ' ' . ($asset->custodian->apellidos ?? '')) ?: '—' }}
+                        </div>
+                    </div>
+
+                    <div>
                         <div class="text-gray-500">Fecha de compra</div>
                         <div class="font-semibold text-gray-900">{{ $asset->fecha_compra ?? '—' }}</div>
                     </div>
@@ -73,8 +80,10 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <div class="text-gray-500">Observaciones</div>
-                        <div class="font-semibold text-gray-900">{{ $asset->observaciones ?? '—' }}</div>
+                        <div class="text-gray-500">Descripción del equipo</div>
+                        <div class="font-semibold text-gray-900">
+                            {{ $asset->observaciones ?: ($asset->type?->description ?? 'Sin descripción registrada') }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,13 +121,11 @@
                                     <td>{{ $m->custodian?->nombre_completo ?? '—' }}</td>
                                     <td>{{ $m->location?->name ?? '—' }}</td>
                                     <td class="text-gray-700">{{ $m->observaciones ?? '—' }}</td>
-
                                     <td class="text-right whitespace-nowrap">
-    <a href="{{ route('assignments.acta.pdf', $m) }}" class="btn-ghost">
-        Descargar Acta PDF
-    </a>
-</td>
-                                    
+                                        <a href="{{ route('assignments.acta.pdf', $m) }}" class="btn-ghost">
+                                            Descargar Acta PDF
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
