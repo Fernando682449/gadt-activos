@@ -19,11 +19,11 @@ class StoreAssetRequest extends FormRequest
             'asset_type_id' => ['required', 'exists:asset_types,id'],
             'status_id' => ['required', 'exists:asset_statuses,id'],
             'location_id' => ['required', 'exists:locations,id'],
-            'brand_id' => ['nullable', 'exists:brands,id'],
-            'custodian_id' => ['required', 'exists:custodians,id'],
             'fecha_compra' => ['nullable', 'date'],
             'costo' => ['nullable', 'numeric', 'min:0'],
+            'nro_factura' => ['nullable', 'string', 'max:100'],
             'observaciones' => ['nullable', 'string'],
+            'brand_id' => ['nullable', 'exists:brands,id'],
         ];
     }
-}
+}   

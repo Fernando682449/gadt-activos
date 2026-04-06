@@ -79,6 +79,11 @@
                         <div class="font-semibold text-gray-900">{{ $asset->costo ?? '—' }}</div>
                     </div>
 
+                    <div>
+    <div class="text-gray-500">N° de factura</div>
+    <div class="font-semibold text-gray-900">{{ $asset->nro_factura ?? '—' }}</div>
+</div>
+
                     <div class="sm:col-span-2">
                         <div class="text-gray-500">Descripción del equipo</div>
                         <div class="font-semibold text-gray-900">

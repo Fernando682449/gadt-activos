@@ -43,6 +43,7 @@
     <tr><th>Ubicación</th><td>{{ $asset->location?->name ?? '—' }}</td></tr>
     <tr><th>Fecha de compra</th><td>{{ $asset->fecha_compra ?? '—' }}</td></tr>
     <tr><th>Costo</th><td>{{ $asset->costo ?? '—' }}</td></tr>
+    <tr><th>N° de factura</th><td>{{ $asset->nro_factura ?? '—' }}</td></tr>
     <tr><th>Observaciones</th><td>{{ $asset->observaciones ?? '—' }}</td></tr>
   </table>
 
