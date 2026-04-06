@@ -11,20 +11,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Asset extends Model
 {
     protected $fillable = [
-        'codigo_patrimonial',
-        'numero_serie',
-        'asset_type_id',
-        'status_id',
-        'location_id',
-        'fecha_compra',
-        'costo',
-        'observaciones',
+    'codigo_patrimonial',
+    'numero_serie',
+    'asset_type_id',
+    'status_id',
+    'location_id',
+    'fecha_compra',
+    'costo',
+    'nro_factura',
+    'fecha_baja',
+    'observaciones',
+    'category_id',
+    'brand_id',
+    'purchase_order_number',
+    'custodian_id',
+];
 
-        'category_id',
-        'brand_id',
-        'purchase_order_number',
-        'custodian_id',
-    ];
 
     public function category()
 {

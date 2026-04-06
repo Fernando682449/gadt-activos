@@ -3,18 +3,18 @@
         <div class="page-header">
             <div>
                 <h2 class="page-title">Editar Activo</h2>
-                <p class="page-subtitle">Actualiza la información del activo seleccionado.</p>
+                <p class="page-subtitle">Actualiza la información registrada del activo en el sistema.</p>
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
                 <a href="{{ route('assets.index') }}" class="btn-ghost">
-                    ← Volver
+                    Volver
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-10 page-bg">
+    <div class="py-8 page-bg">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
 
             @if ($errors->any())
@@ -28,16 +28,22 @@
                 </div>
             @endif
 
+            @if(session('success'))
+                <div class="alert-success mb-6">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="card p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-7">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                     <div>
                         <div class="section-title">Formulario de edición</div>
                         <div class="section-subtitle">Los campos marcados con * son obligatorios.</div>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
-                        <span class="status-pill bg-gray-100 text-gray-800">🧾 Código: {{ $asset->codigo_patrimonial }}</span>
-                        <span class="status-pill bg-brand-100 text-brand-800">✏️ Edición</span>
+                        <span class="status-pill bg-brand-100 text-brand-800">Activos</span>
+                        <span class="status-pill bg-gray-100 text-gray-800">Edición</span>
                     </div>
                 </div>
 
@@ -53,9 +59,11 @@
                             <div class="relative mt-1">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🏷️</span>
                                 <input
+                                    type="text"
                                     name="codigo_patrimonial"
                                     value="{{ old('codigo_patrimonial', $asset->codigo_patrimonial) }}"
                                     class="input-pro-2 pl-9"
+                                    placeholder="Ej: DTI-2026-001"
                                     required
                                 >
                             </div>
@@ -70,6 +78,7 @@
                             <div class="relative mt-1">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔢</span>
                                 <input
+                                    type="text"
                                     name="numero_serie"
                                     value="{{ old('numero_serie', $asset->numero_serie) }}"
                                     class="input-pro-2 pl-9"
@@ -114,7 +123,6 @@
                         </div>
 
                         {{-- Ubicación --}}
-                        @isset($locations)
                         <div>
                             <label class="label-pro">Ubicación *</label>
                             <select name="location_id" class="select-pro-2 mt-1" required>
@@ -129,14 +137,12 @@
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        @endisset
 
                         {{-- Marca --}}
-                        @isset($brands)
                         <div>
                             <label class="label-pro">Marca</label>
                             <select name="brand_id" class="select-pro-2 mt-1">
-                                <option value="">-- Sin marca --</option>
+                                <option value="">-- Seleccione --</option>
                                 @foreach($brands as $b)
                                     <option value="{{ $b->id }}" @selected(old('brand_id', $asset->brand_id) == $b->id)>
                                         {{ $b->name }}
@@ -147,20 +153,64 @@
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        @endisset
 
-                        {{-- Responsable / Custodio --}}
+                        {{-- Responsable --}}
                         <div class="md:col-span-2">
                             <label class="label-pro">Responsable / Custodio *</label>
                             <select name="custodian_id" class="select-pro-2 mt-1" required>
                                 <option value="">-- Seleccione al responsable --</option>
-                                @foreach($custodians as $c)
-                                    <option value="{{ $c->id }}" @selected(old('custodian_id', $asset->custodian_id) == $c->id)>
-                                        {{ $c->nombre_completo ?? trim(($c->nombres ?? '') . ' ' . ($c->apellidos ?? '')) }}
+                                @foreach($custodians as $custodian)
+                                    <option value="{{ $custodian->id }}" @selected(old('custodian_id', $asset->custodian_id) == $custodian->id)>
+                                        {{ $custodian->nombre_completo ?? trim(($custodian->nombres ?? '') . ' ' . ($custodian->apellidos ?? '')) }}
                                     </option>
                                 @endforeach
                             </select>
                             @error('custodian_id')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Fecha de compra --}}
+                        <div>
+                            <label class="label-pro">Fecha de compra</label>
+                            <input
+                                type="date"
+                                name="fecha_compra"
+                                value="{{ old('fecha_compra', $asset->fecha_compra) }}"
+                                class="input-pro-2 mt-1"
+                            >
+                            @error('fecha_compra')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Costo --}}
+                        <div>
+                            <label class="label-pro">Costo</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                name="costo"
+                                value="{{ old('costo', $asset->costo) }}"
+                                class="input-pro-2 mt-1"
+                                placeholder="0.00"
+                            >
+                            @error('costo')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Número de factura --}}
+                        <div class="md:col-span-2">
+                            <label class="label-pro">N° de factura</label>
+                            <input
+                                type="text"
+                                name="nro_factura"
+                                value="{{ old('nro_factura', $asset->nro_factura) }}"
+                                class="input-pro-2 mt-1"
+                                placeholder="Ej: FAC-2026-001"
+                            >
+                            @error('nro_factura')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -171,32 +221,29 @@
                             <textarea
                                 name="observaciones"
                                 class="textarea-pro mt-1"
-                                rows="3"
-                                placeholder="Ej: Se cambió de ambiente, equipo reparado, etc."
+                                rows="4"
+                                placeholder="Detalle adicional del activo"
                             >{{ old('observaciones', $asset->observaciones) }}</textarea>
                             @error('observaciones')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
                     </div>
 
-                    <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div class="pt-5 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div class="text-xs text-gray-500">
-                            Recuerda: los cambios quedan registrados en el sistema.
+                            Los cambios realizados quedarán registrados en el historial de acciones.
                         </div>
 
                         <div class="flex gap-2 justify-end">
                             <a href="{{ route('assets.index') }}" class="btn-ghost">
                                 Cancelar
                             </a>
-
                             <button type="submit" class="btn-brand">
-                                Actualizar
+                                Actualizar activo
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
 

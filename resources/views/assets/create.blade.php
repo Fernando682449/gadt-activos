@@ -134,22 +134,6 @@
                             </div>
                         </div>
 
-                        {{-- Responsable / Custodio --}}
-                        <div>
-                            <label class="label-pro">Responsable / Custodio</label>
-                            <select name="custodian_id" class="select-pro-2" required>
-                                <option value="">-- Seleccione al responsable --</option>
-                                @foreach($custodians as $c)
-                                    <option value="{{ $c->id }}" @selected(old('custodian_id') == $c->id)>
-                                        {{ $c->nombre_completo ?? trim(($c->nombres ?? '') . ' ' . ($c->apellidos ?? '')) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('custodian_id')
-                                <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         {{-- Fecha / Costo --}}
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
@@ -181,6 +165,21 @@
                             </div>
                         </div>
 
+                        {{-- N° de factura --}}
+                        <div>
+                            <label class="label-pro">N° de factura</label>
+                            <input
+                                type="text"
+                                name="nro_factura"
+                                class="input-pro-2"
+                                value="{{ old('nro_factura') }}"
+                                placeholder="Ej: FAC-2026-001"
+                            >
+                            @error('nro_factura')
+                                <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Observaciones --}}
                         <div>
                             <label class="label-pro">Observaciones</label>
@@ -188,7 +187,7 @@
                                 name="observaciones"
                                 class="input-pro-2"
                                 rows="4"
-                                placeholder="Detalle adicional del activo."
+                                placeholder="Detalle adicional del activo (opcional)."
                             >{{ old('observaciones') }}</textarea>
                             @error('observaciones')
                                 <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
@@ -209,7 +208,7 @@
             </div>
 
             <p class="mt-4 text-xs text-gray-500 text-center">
-                Tip: Usa un código patrimonial único y asigna siempre un responsable para facilitar el control y la auditoría.
+                Tip: Usa un código patrimonial único para facilitar búsquedas y auditoría.
             </p>
 
         </div>

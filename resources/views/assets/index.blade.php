@@ -17,6 +17,10 @@
                     <a href="{{ route('reports.assets.pdf') }}" class="btn-dark-soft">
                         Exportar PDF
                     </a>
+
+                    <a href="{{ route('reports.altas-bajas-fecha') }}" class="btn-ghost">
+    Altas y bajas por fecha
+</a>
                 @endcan
             </div>
         </div>
@@ -122,6 +126,7 @@
                                 <th>Ubicación</th>
                                 <th>Marca</th>
                                 <th>Responsable / Custodio</th>
+                                <th>N° Factura</th>
                                 <th class="text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -164,6 +169,7 @@
                                             <span class="status-bad">Sin responsable asignado</span>
                                         @endif
                                     </td>
+                                    <td>{{ $asset->nro_factura ?? '—' }}</td>
 
                                     <td class="text-right table-actions">
                                         <a class="link-view" href="{{ route('assets.show', $asset) }}">Ver</a>

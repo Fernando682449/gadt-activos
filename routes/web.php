@@ -77,7 +77,9 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
 });
 
-
+Route::middleware('permission:assets.view')
+    ->get('/assets/{asset}/alta-pdf', [AssetController::class, 'altaPdf'])
+    ->name('assets.alta.pdf');
 
     Route::middleware('permission:assets.view')
         ->get('/assets', [AssetController::class, 'index'])
@@ -287,7 +289,22 @@ Route::get('/assignments/{assignment}/devolucion-pdf', [AssignmentController::cl
 
 });
     
+    Route::middleware('permission:assets.view')
+    ->get('/assets/{asset}/alta-pdf', [AssetController::class, 'altaPdf'])
+    ->name('assets.alta.pdf');
+
+
+    Route::middleware('permission:assets.view')
+    ->get('/reports/altas-bajas-fecha/pdf', [AssetController::class, 'reporteAltasBajasPorFechaPdf'])
+    ->name('reports.altas-bajas-fecha.pdf');
     
+Route::middleware('permission:assets.view')
+    ->get('/reports/altas-bajas-fecha', [AssetController::class, 'reporteAltasBajasPorFecha'])
+    ->name('reports.altas-bajas-fecha');
+
+Route::middleware('permission:assignments.view')
+    ->get('/assignments/{assignment}/acta-pdf', [AssignmentController::class, 'actaPdf'])
+    ->name('assignments.acta.pdf');
     
     /*
 |--------------------------------------------------------------------------
