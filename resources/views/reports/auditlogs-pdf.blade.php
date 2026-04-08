@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Reporte Bitácora</title>
+    <title>Reporte Historial de Acciones</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 10px; }
         h2 { margin: 0 0 8px 0; }
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h2>Reporte de Bitácora</h2>
+    <h2>Reporte de Historial de Acciones</h2>
     <p class="muted">Generado: {{ now()->format('d/m/Y H:i') }}</p>
 
     <table>

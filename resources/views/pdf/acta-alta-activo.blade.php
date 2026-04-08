@@ -1,4 +1,4 @@
-<!doctype html>
+</html><!doctype html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
@@ -8,22 +8,57 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
             color: #111;
-            margin: 35px;
+            margin: 28px;
             line-height: 1.45;
         }
 
-        .title {
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            text-transform: uppercase;
+        .header-table,
+        .info-table,
+        .data-table,
+        .firma-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .sub {
+        .header-table td {
+            border: none;
+            vertical-align: middle;
+        }
+
+        .logo-box {
+            width: 90px;
+        }
+
+        .logo {
+            width: 78px;
+            height: auto;
+        }
+
+        .title-box {
             text-align: center;
+        }
+
+        .title {
+            font-size: 17px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
             font-size: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 2px;
+        }
+
+        .meta {
+            margin-top: 6px;
+            font-size: 11px;
+        }
+
+        .intro {
+            margin-top: 18px;
+            margin-bottom: 14px;
+            text-align: justify;
         }
 
         .section-title {
@@ -31,44 +66,39 @@
             margin-top: 18px;
             margin-bottom: 8px;
             text-transform: uppercase;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-
-        th, td {
-            border: 1px solid #333;
+            background: #f2f2f2;
+            border: 1px solid #999;
             padding: 6px 8px;
+        }
+
+        .data-table th,
+        .data-table td,
+        .info-table th,
+        .info-table td {
+            border: 1px solid #333;
+            padding: 7px 8px;
             vertical-align: top;
         }
 
-        th {
-            background: #f2f2f2;
+        .data-table th,
+        .info-table th {
+            background: #efefef;
             text-align: left;
         }
 
-        .no-border td {
-            border: none;
-            padding: 2px 0;
+        .small {
+            font-size: 11px;
         }
 
-        .text-right {
-            text-align: right;
-        }
-
-        .firma {
+        .firma-table {
             margin-top: 55px;
-            width: 100%;
         }
 
-        .firma td {
+        .firma-table td {
             border: none;
             text-align: center;
-            padding-top: 35px;
             width: 50%;
+            padding-top: 28px;
         }
 
         .linea {
@@ -77,31 +107,58 @@
             margin: 0 auto 6px auto;
         }
 
-        .small {
-            font-size: 11px;
+        .text-right {
+            text-align: right;
+        }
+
+        .muted {
+            color: #444;
         }
     </style>
 </head>
 <body>
 
-    <div class="title">Acta de Alta de Activo</div>
-    <div class="sub">Gobierno Autónomo Departamental de Tarija</div>
+    @php
+        $logoPath = public_path('img/2.jpg');
+        $logoBase64 = '';
 
-    <table class="no-border">
+        if (file_exists($logoPath)) {
+            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
+        }
+    @endphp
+
+    <table class="header-table">
         <tr>
-            <td><b>Fecha:</b> {{ now()->format('Y-m-d') }}</td>
-            <td class="text-right"><b>Código:</b> {{ $asset->codigo_patrimonial ?? '—' }}</td>
+            <td class="logo-box">
+                @if($logoBase64)
+                    <img src="{{ $logoBase64 }}" class="logo" alt="Logo Gobernación">
+                @endif
+            </td>
+
+            <td class="title-box">
+                <div class="title">Acta de Alta de Activo</div>
+                <div class="subtitle">Gobierno Autónomo Departamental de Tarija</div>
+                <div class="subtitle">Dirección de Tecnologías de la Información</div>
+                <div class="meta">
+                    <b>Fecha de emisión:</b> {{ now()->format('Y-m-d') }}
+                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    <b>Código patrimonial:</b> {{ $asset->codigo_patrimonial ?? '—' }}
+                </div>
+            </td>
         </tr>
     </table>
 
-    <p>
+    <p class="intro">
         Mediante la presente, se deja constancia del <b>registro de alta</b> del activo institucional detallado a continuación,
-        para fines de control, inventario, trazabilidad y asignación de responsabilidad dentro del sistema de gestión de activos.
+        para fines de control, inventario, trazabilidad, respaldo documental y asignación de responsabilidad dentro del sistema
+        de gestión de activos tecnológicos.
     </p>
 
-    <div class="section-title">Datos del activo</div>
+    <div class="section-title">1. Datos generales del activo</div>
 
-    <table>
+    <table class="data-table">
         <thead>
             <tr>
                 <th>Código patrimonial</th>
@@ -122,7 +179,9 @@
         </tbody>
     </table>
 
-    <table>
+    <div class="section-title">2. Información complementaria</div>
+
+    <table class="info-table">
         <tr>
             <th style="width: 30%;">Número de serie</th>
             <td>{{ $asset->numero_serie ?? '—' }}</td>
@@ -142,14 +201,18 @@
             <td>{{ $asset->costo ?? '—' }}</td>
         </tr>
         <tr>
+            <th>N° de factura</th>
+            <td>{{ $asset->nro_factura ?? '—' }}</td>
+        </tr>
+        <tr>
             <th>Descripción / Observaciones</th>
             <td>{{ $asset->observaciones ?? 'Sin observaciones registradas.' }}</td>
         </tr>
     </table>
 
-    <div class="section-title">Responsables del registro</div>
+    <div class="section-title">3. Responsables del registro</div>
 
-    <table>
+    <table class="info-table">
         <tr>
             <th style="width: 30%;">Usuario que registra</th>
             <td>{{ $usuario->name ?? '—' }}</td>
@@ -162,11 +225,11 @@
         </tr>
     </table>
 
-    <p class="small">
-        Se emite la presente acta como respaldo documental del alta del activo dentro del sistema institucional.
+    <p class="small muted" style="margin-top: 14px;">
+        La presente acta se emite como respaldo documental del alta del activo dentro del sistema institucional de gestión de activos tecnológicos.
     </p>
 
-    <table class="firma">
+    <table class="firma-table">
         <tr>
             <td>
                 <div class="linea"></div>

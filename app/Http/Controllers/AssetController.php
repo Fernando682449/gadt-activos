@@ -435,23 +435,23 @@ public function reporteAltasBajasPorFechaPdf(Request $request)
 }
 
     public function altaPdf(Asset $asset)
-    {
-        $asset->load(['type', 'status', 'location', 'brand', 'custodian']);
+{
+    $asset->load(['type', 'status', 'location', 'brand', 'custodian']);
 
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'accion'  => "Se descargó el acta PDF del activo {$asset->codigo_patrimonial} ({$this->assetTypeName($asset)} - {$this->assetBrandName($asset)}), estado {$this->assetStatusName($asset)}, ubicación {$this->assetLocationName($asset)}, responsable {$this->assetCustodianName($asset)} y factura {$this->safeText($asset->nro_factura)}. Operación realizada por {$this->currentUserName()}.",
-            'modulo'  => 'Activos',
-            'fecha'   => now(),
-        ]);
+    AuditLog::create([
+        'user_id' => Auth::id(),
+        'accion'  => "Se descargó el acta PDF del activo {$asset->codigo_patrimonial} ({$this->assetTypeName($asset)} - {$this->assetBrandName($asset)}), estado {$this->assetStatusName($asset)}, ubicación {$this->assetLocationName($asset)}, responsable {$this->assetCustodianName($asset)}, serie {$this->safeText($asset->numero_serie)}, fecha de compra {$this->safeText($asset->fecha_compra)}, costo {$this->safeText($asset->costo)} y factura {$this->safeText($asset->nro_factura)}. Operación realizada por {$this->currentUserName()}.",
+        'modulo'  => 'Activos',
+        'fecha'   => now(),
+    ]);
 
-        $pdf = Pdf::loadView('pdf.acta-alta-activo', [
-            'asset'   => $asset,
-            'usuario' => auth()->user(),
-        ])->setPaper('A4');
+    $pdf = Pdf::loadView('pdf.acta-alta-activo', [
+        'asset'   => $asset,
+        'usuario' => auth()->user(),
+    ])->setPaper('A4');
 
-        return $pdf->download('ACTA_ALTA_' . $asset->codigo_patrimonial . '.pdf');
-    }
+    return $pdf->download('ACTA_ALTA_' . $asset->codigo_patrimonial . '.pdf');
+}
 
     private function assetTypeName(Asset $asset): string
     {

@@ -10,32 +10,54 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     public function assetsPdf(Request $request)
-    {
-        $query = Asset::with(['type', 'status', 'location', 'brand']);
+{
+    $query = Asset::with(['type', 'status', 'location', 'brand', 'custodian']);
 
-        if ($request->filled('q')) {
-            $q = $request->q;
-            $query->where(function ($sub) use ($q) {
-                $sub->where('codigo_patrimonial', 'like', "%{$q}%")
-                    ->orWhere('numero_serie', 'like', "%{$q}%");
-            });
-        }
-
-        if ($request->filled('asset_type_id')) $query->where('asset_type_id', $request->asset_type_id);
-        if ($request->filled('status_id'))     $query->where('status_id', $request->status_id);
-        if ($request->filled('location_id'))   $query->where('location_id', $request->location_id);
-        if ($request->filled('brand_id'))      $query->where('brand_id', $request->brand_id);
-
-        // En PDF normalmente conviene sin paginación
-        $assets = $query->orderByDesc('id')->get();
-
-        $filters = $request->only(['q','asset_type_id','status_id','location_id','brand_id']);
-
-        $pdf = Pdf::loadView('reports.assets-pdf', compact('assets', 'filters'))
-            ->setPaper('a4', 'landscape');
-
-        return $pdf->download('reporte_activos.pdf');
+    if ($request->filled('q')) {
+        $q = $request->q;
+        $query->where(function ($sub) use ($q) {
+            $sub->where('codigo_patrimonial', 'like', "%{$q}%")
+                ->orWhere('numero_serie', 'like', "%{$q}%")
+                ->orWhere('nro_factura', 'like', "%{$q}%");
+        });
     }
+
+    if ($request->filled('asset_type_id')) {
+        $query->where('asset_type_id', $request->asset_type_id);
+    }
+
+    if ($request->filled('status_id')) {
+        $query->where('status_id', $request->status_id);
+    }
+
+    if ($request->filled('location_id')) {
+        $query->where('location_id', $request->location_id);
+    }
+
+    if ($request->filled('brand_id')) {
+        $query->where('brand_id', $request->brand_id);
+    }
+
+    $assets = $query->orderByDesc('id')->get();
+
+    $filters = $request->only(['q', 'asset_type_id', 'status_id', 'location_id', 'brand_id']);
+    $usuario = auth()->user();
+
+    AuditLog::create([
+        'user_id' => auth()->id(),
+        'accion'  => 'Se exportó el reporte general de activos en PDF. Operación realizada por ' . ($usuario->name ?? 'Usuario del sistema') . '.',
+        'modulo'  => 'Reportes',
+        'fecha'   => now(),
+    ]);
+
+    $pdf = Pdf::loadView('reports.assets-pdf', [
+        'assets'   => $assets,
+        'filters'  => $filters,
+        'usuario'  => $usuario,
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->download('reporte_activos.pdf');
+}
     public function custodiansPdf(Request $request)
 {
     $query = Custodian::query();
