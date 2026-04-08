@@ -55,7 +55,7 @@
 
                     <div class="flex gap-2 flex-wrap">
     <button type="submit" class="btn-brand">
-        Generar reporte
+        Buscar Reporte
     </button>
 
     <a href="{{ route('reports.altas-bajas-fecha') }}" class="btn-dark-soft">
